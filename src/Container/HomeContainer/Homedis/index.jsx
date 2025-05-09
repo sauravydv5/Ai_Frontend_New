@@ -24,7 +24,7 @@ const Homedis = () => {
           Welcome to SwathyaAI
         </h1>
         <p className="max-w-2xl text-lg md:text-xl lg:text-2xl">
-          Your mental health companion powered by AI — track your mood, chat
+          Your Presonal health companion powered by AI — track your mood, chat
           with our bot, and find peace.
         </p>
       </div>
