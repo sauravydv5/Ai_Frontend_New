@@ -11,7 +11,7 @@ const Homedis = () => {
         playsInline
         className="absolute top-0 left-0 z-0 object-cover w-full h-full"
       >
-        <source src="/image/bgvid.mp4" type="video/mp4" />
+        <source src="/image/bgvideo.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
