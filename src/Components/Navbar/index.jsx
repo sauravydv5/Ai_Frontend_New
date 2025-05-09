@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // ✅ Import Link
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,32 +70,56 @@ const Navbar = () => {
           <div className="md:hidden mt-4 text-white font-medium text-[17px] space-y-3">
             <ul className="flex flex-col gap-2">
               <li>
-                <Link to="/" className="hover:text-gray-300">
+                <Link
+                  to="/"
+                  onClick={() => setIsOpen(false)}
+                  className="hover:text-gray-300"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-gray-300">
+                <Link
+                  to="/about"
+                  onClick={() => setIsOpen(false)}
+                  className="hover:text-gray-300"
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/pricing" className="hover:text-gray-300">
+                <Link
+                  to="/pricing"
+                  onClick={() => setIsOpen(false)}
+                  className="hover:text-gray-300"
+                >
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="hover:text-gray-300">
+                <Link
+                  to="/blog"
+                  onClick={() => setIsOpen(false)}
+                  className="hover:text-gray-300"
+                >
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-gray-300">
+                <Link
+                  to="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="hover:text-gray-300"
+                >
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link to="/shop" className="hover:text-gray-300">
+                <Link
+                  to="/shop"
+                  onClick={() => setIsOpen(false)}
+                  className="hover:text-gray-300"
+                >
                   Shop
                 </Link>
               </li>
