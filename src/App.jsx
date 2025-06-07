@@ -10,7 +10,7 @@ import Dashboard from "./Pages/Doctor/Dashboard";
 import PatientRegister from "./Pages/Patient/PatientRegister";
 import PatientLogin from "./Pages/Patient/PatientLogin";
 import ApplyAsDoctor from "./Pages/Doctor/ApplyAsDoctor";
-// import PatientDashboard from "./Pages/Patient/PatientDashboard";
+import PatientDashboard from "./Pages/Patient/PatientDashboard";
 
 const App = () => {
   return (
@@ -23,7 +23,7 @@ const App = () => {
         <Route path="/apply-doctor" element={<ApplyAsDoctor />} />
         <Route path="/patientlogin" element={<PatientLogin />} />
         <Route path="/patientregister" element={<PatientRegister />} />
-        {/* <Route path="/Patient-dashboard" element={<PatientDashboard />} /> */}
+        <Route path="/Patient-dashboard" element={<PatientDashboard />} />
       </Routes>
     </>
   );

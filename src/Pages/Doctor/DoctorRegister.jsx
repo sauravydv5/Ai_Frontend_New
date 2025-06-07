@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { showLoading, hideLoading } from "../redux/feature/alertSlice";
 
 const DoctorRegister = () => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    firstName: "",
+    lastName: "",
+    emailId: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -21,28 +19,41 @@ const DoctorRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { name, email, password } = formData;
-    if (!name || !email || !password) {
+    const { firstName, lastName, emailId, password } = formData;
+
+    if (!firstName || !lastName || !emailId || !password) {
       setError("All fields are required");
       return;
     }
 
     try {
-      // dispatch(showLoading());
       const res = await axios.post(
         "http://localhost:3000/doctor/signup",
-        formData
+        {
+          firstName,
+          lastName,
+          emailId,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
       );
-      dispatch(hideLoading());
-      if (res.data.success) {
-        alert("Registered successfully!");
+
+      if (res.data.message === "Doctor registered successfully") {
+        alert("Doctor registered successfully!");
         navigate("/doctorlogin");
       } else {
-        setError(res.data.message);
+        setError(res.data.message || "Registration failed");
       }
     } catch (err) {
-      dispatch(hideLoading());
-      setError("Something went wrong. Please try again.");
+      console.error("Signup Error:", err.response?.data || err.message);
+      setError(
+        err.response?.data?.message || "Something went wrong. Try again."
+      );
     }
   };
 
@@ -50,7 +61,7 @@ const DoctorRegister = () => {
     <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-r from-blue-100 to-blue-200">
       <div className="w-full max-w-md p-6 bg-white shadow-xl rounded-2xl sm:p-8">
         <h2 className="mb-6 text-3xl font-bold text-center text-blue-700">
-          Create Account
+          Doctor Registration
         </h2>
 
         {error && (
@@ -59,11 +70,22 @@ const DoctorRegister = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium">Full Name</label>
+            <label className="block mb-1 font-medium">First Name</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
@@ -73,8 +95,8 @@ const DoctorRegister = () => {
             <label className="block mb-1 font-medium">Email Address</label>
             <input
               type="email"
-              name="email"
-              value={formData.email}
+              name="emailId"
+              value={formData.emailId}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
             />

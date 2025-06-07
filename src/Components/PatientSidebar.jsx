@@ -5,6 +5,5 @@ const PatientMenu = [
   { name: "Symptom Checker", icon: "🩺", path: "/symptom-checker" },
   { name: "Book Appointment", icon: "📅", path: "/book-appointment" },
   { name: "View Prescription", icon: "💊", path: "/view-prescription" },
-  { name: "Daily Health Tips", icon: "📌", path: "/health-tips" },
 ];
 export default PatientMenu;

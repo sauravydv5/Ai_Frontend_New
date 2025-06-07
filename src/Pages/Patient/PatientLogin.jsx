@@ -6,7 +6,7 @@ const PatientLogin = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    identifier: "sauravydv5",
+    identifier: "user@gmail.com",
     password: "Saurav@123",
   });
   const [error, setError] = useState("");

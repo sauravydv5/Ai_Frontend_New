@@ -34,18 +34,7 @@ const About = () => {
         {/* Add this animation style in your global CSS or Tailwind config */}
         <style>
           {`
-      @keyframes gradient-x {
-        0%, 100% {
-          background-position: 0% center;
-        }
-        50% {
-          background-position: 100% center;
-        }
-      }
-      .animate-gradient-x {
-        background-size: 200% auto;
-        animation: gradient-x 3s ease infinite;
-      }
+      
     `}
         </style>
       </section>

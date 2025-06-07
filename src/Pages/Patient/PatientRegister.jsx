@@ -7,6 +7,7 @@ const PatientRegister = () => {
 
   const [formData, setFormData] = useState({
     firstName: "",
+    lastName: "",
     username: "",
     emailId: "",
     password: "",
@@ -21,8 +22,8 @@ const PatientRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { firstName, username, emailId, password } = formData;
-    if (!firstName || !username || !emailId || !password) {
+    const { firstName, lastName, username, emailId, password } = formData;
+    if (!firstName || !lastName || !username || !emailId || !password) {
       setError("All fields are required");
       return;
     }
@@ -59,11 +60,23 @@ const PatientRegister = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium">Full Name</label>
+            <label className="block mb-1 font-medium">First Name</label>
             <input
               type="text"
               name="firstName"
               value={formData.firstName}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
