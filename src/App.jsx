@@ -2,24 +2,28 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Navbar from "./Components/Navbar";
-import HomePage from "./Pages/HomePage/HomeContent";
-import BlogPage from "./Pages/BlogPage";
-import ContactPage from "./Pages/ContactPage";
-import PricingPage from "./Pages/PricingPage";
-import ShopPage from "./Pages/ShopPage";
-import AboutPage from "./Pages/AboutPage";
+import Homepage from "./Pages/Homepage";
+import DoctorLogin from "./Pages/Doctor/DoctorLogin";
+import DoctorRegister from "./Pages/Doctor/DoctorRegister";
+import Dashboard from "./Pages/Doctor/Dashboard";
+
+import PatientRegister from "./Pages/Patient/PatientRegister";
+import PatientLogin from "./Pages/Patient/PatientLogin";
+import ApplyAsDoctor from "./Pages/Doctor/ApplyAsDoctor";
+// import PatientDashboard from "./Pages/Patient/PatientDashboard";
 
 const App = () => {
   return (
     <>
-      <Navbar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/pricing" element={<PricingPage />} />
-        <Route path="/shop" element={<ShopPage />} />
+        <Route path="/" element={<Homepage />} />
+        <Route path="/doctorlogin" element={<DoctorLogin />} />
+        <Route path="/doctoregister" element={<DoctorRegister />} />
+        <Route path="/Doctor-dashboard" element={<Dashboard />} />
+        <Route path="/apply-doctor" element={<ApplyAsDoctor />} />
+        <Route path="/patientlogin" element={<PatientLogin />} />
+        <Route path="/patientregister" element={<PatientRegister />} />
+        {/* <Route path="/Patient-dashboard" element={<PatientDashboard />} /> */}
       </Routes>
     </>
   );

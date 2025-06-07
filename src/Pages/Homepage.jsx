@@ -1,8 +1,12 @@
 import React from "react";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
+import About from "../Components/About";
 
-const Homedis = () => {
+const Homepage = () => {
   return (
     <>
+      <Navbar />
       <div className="relative h-screen overflow-hidden">
         {/* Background Video */}
         <video
@@ -33,8 +37,10 @@ const Homedis = () => {
           </button>
         </div>
       </div>
+      <About />
+      <Footer />
     </>
   );
 };
 
-export default Homedis;
+export default Homepage;
