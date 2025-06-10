@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const ApplyAsDoctor = ({ user }) => {
+const ApplyAsDoctor = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -17,18 +17,20 @@ const ApplyAsDoctor = ({ user }) => {
     availableTo: "",
   });
 
-  const [picture, setPicture] = useState(null); // File input
+  const [picture, setPicture] = useState(null);
   const [message, setMessage] = useState("");
 
+  // Autofill name and email from localStorage
   useEffect(() => {
-    if (user) {
+    const storedDoctor = JSON.parse(localStorage.getItem("doctor"));
+    if (storedDoctor) {
       setFormData((prev) => ({
         ...prev,
-        name: user.name || "",
-        email: user.email || "",
+        name: storedDoctor.firstName || "",
+        email: storedDoctor.emailId || "",
       }));
     }
-  }, [user]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,11 +57,9 @@ const ApplyAsDoctor = ({ user }) => {
       }
 
       const response = await axios.post(
-        "http//:localhost:3000/doctor/apply-doctor",
+        "http://localhost:3000/doctor/apply-doctor",
         data,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
 
       setMessage(response.data.message);
@@ -96,6 +96,7 @@ const ApplyAsDoctor = ({ user }) => {
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               required
+              readOnly
             />
           </div>
           <div>
@@ -107,6 +108,7 @@ const ApplyAsDoctor = ({ user }) => {
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               required
+              readOnly
             />
           </div>
         </div>
@@ -121,15 +123,30 @@ const ApplyAsDoctor = ({ user }) => {
           required
         />
 
-        <input
-          type="text"
-          name="speciality"
-          placeholder="Speciality"
-          value={formData.speciality}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded"
-          required
-        />
+        <div>
+          <label className="block text-sm font-medium">Speciality</label>
+          <select
+            name="speciality"
+            value={formData.speciality}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+            required
+          >
+            <option value="" disabled>
+              Select your speciality
+            </option>
+            <option value="General Physician">General Physician</option>
+            <option value="Cardiologist">Cardiologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+            <option value="ENT Specialist">ENT Specialist</option>
+            <option value="Neurologist">Neurologist</option>
+            <option value="Gynecologist">Gynecologist</option>
+            <option value="Pediatrician">Pediatrician</option>
+            <option value="Psychiatrist">Psychiatrist</option>
+            <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+            <option value="Dentist">Dentist</option>
+          </select>
+        </div>
 
         <input
           type="tel"
@@ -183,17 +200,6 @@ const ApplyAsDoctor = ({ user }) => {
               required
             />
           </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Profile Picture</label>
-          <input
-            type="file"
-            name="picture"
-            onChange={handlePictureChange}
-            accept="image/*"
-            className="w-full px-3 py-2 border rounded"
-          />
         </div>
 
         <button

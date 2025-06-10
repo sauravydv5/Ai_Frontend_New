@@ -1,25 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { showLoading, hideLoading } from "../redux/feature/alertSlice";
-// import { useDispatch } from "react-redux";
 
 const DoctorLogin = () => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
-    emailId: "saurav@doc.com",
-    password: "123456",
+    emailId: "",
+    password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     const { emailId, password } = formData;
     if (!emailId || !password) {
@@ -28,25 +27,25 @@ const DoctorLogin = () => {
     }
 
     try {
-      // dispatch(showLoading());
+      setLoading(true);
       const res = await axios.post(
         "http://localhost:3000/doctor/login",
         formData,
-        {
-          withCredentials: true, // for cookies
-        }
+        { withCredentials: true }
       );
-      // dispatch(hideLoading());
+      setLoading(false);
 
-      if (res.data.token) {
+      if (res.data.token && res.data.doctor) {
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("doctor", JSON.stringify(res.data.doctor));
+
         alert("Login successful!");
         navigate("/Doctor-dashboard");
       } else {
         setError(res.data.message || "Login failed");
       }
     } catch (err) {
-      // dispatch(hideLoading());
+      setLoading(false);
       setError(err.response?.data?.message || "Something went wrong.");
     }
   };
@@ -70,6 +69,7 @@ const DoctorLogin = () => {
               name="emailId"
               value={formData.emailId}
               onChange={handleChange}
+              placeholder="Enter your email"
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
@@ -82,6 +82,7 @@ const DoctorLogin = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              placeholder="Enter your password"
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
@@ -89,9 +90,14 @@ const DoctorLogin = () => {
 
           <button
             type="submit"
-            className="w-full px-4 py-2 font-medium text-white transition duration-300 bg-blue-600 rounded-md hover:bg-blue-700"
+            disabled={loading}
+            className={`w-full px-4 py-2 font-medium text-white rounded-md transition duration-300 ${
+              loading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

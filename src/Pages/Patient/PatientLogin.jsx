@@ -6,8 +6,8 @@ const PatientLogin = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    identifier: "user@gmail.com",
-    password: "Saurav@123",
+    identifier: "",
+    password: "",
   });
   const [error, setError] = useState("");
 
@@ -31,10 +31,13 @@ const PatientLogin = () => {
         { withCredentials: true }
       );
 
+      console.log("Login Response:", res.data);
+
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("patientInfo", JSON.stringify(res.data.user));
         alert("Login successful!");
-        navigate("/patient-dashboard");
+        navigate("/Patient-dashboard");
       } else {
         setError(res.data.message || "Login failed");
       }

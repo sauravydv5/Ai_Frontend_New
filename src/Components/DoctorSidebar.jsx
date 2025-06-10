@@ -1,11 +1,11 @@
 const DoctorMenu = [
   { name: "Home", icon: "🏠", path: "/" },
-  { name: "Apply as Doctor", icon: "🩺", path: "/apply-doctor" },
-  { name: "View Appointments", icon: "📅", path: "/doctor-appointments" },
+  { name: "Profile", icon: "🩺", path: "/profileview" },
+  { name: "View Appointments", icon: "📅", path: "/seeappointmentlist" },
   {
     name: "Add Diagnosis & Prescription",
     icon: "📝",
-    path: "/add-prescription",
+    path: "/doctordiagosisform",
   },
   { name: "History & Feedback", icon: "📋", path: "/history-feedback" },
 ];
