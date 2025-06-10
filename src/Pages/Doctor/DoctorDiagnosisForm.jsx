@@ -1,4 +1,3 @@
-// DoctorDiagnosisForm.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -12,38 +11,53 @@ const DoctorDiagnosisForm = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    // Fetch accepted appointments
+    // Fetch accepted appointments with no existing diagnosis or prescription
     const fetchAppointments = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/doctor/my-appointments",
+          "http://localhost:3000/appointments/appointments-list",
           {
             withCredentials: true,
           }
         );
+
         const pending = res.data.data.filter(
           (a) => a.status === "accepted" && (!a.diagnosis || !a.prescription)
         );
+
         setAppointments(pending);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching appointments:", err);
       }
     };
+
     fetchAppointments();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const res = await axios.post(
-        "localhost:3000/appointments/submitdiagnosis",
+        "http://localhost:3000/appointments/submitdiagnosis",
         formData,
         { withCredentials: true }
       );
+
       setMessage("Diagnosis submitted successfully!");
       setFormData({ appointmentId: "", diagnosis: "", prescription: "" });
+
+      // Optionally refresh appointment list after submission
+      const refreshed = await axios.get(
+        "http://localhost:3000/appointments/appointments-list",
+        { withCredentials: true }
+      );
+      const updated = refreshed.data.data.filter(
+        (a) => a.status === "accepted" && (!a.diagnosis || !a.prescription)
+      );
+      setAppointments(updated);
     } catch (err) {
-      console.error(err);
+      console.error("Submission error:", err);
       setMessage("Submission failed. Please try again.");
     }
   };
@@ -56,7 +70,7 @@ const DoctorDiagnosisForm = () => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block mb-1">Select Appointment</label>
+          <label className="block mb-1 font-medium">Select Appointment</label>
           <select
             className="w-full p-2 border rounded"
             value={formData.appointmentId}
@@ -67,7 +81,7 @@ const DoctorDiagnosisForm = () => {
             <option value="">-- Select --</option>
             {appointments.map((appt) => (
               <option key={appt._id} value={appt._id}>
-                {appt.patientName} -{" "}
+                {appt.patientName} (ID: {appt.patientId}) -{" "}
                 {new Date(appt.appointmentDate).toLocaleDateString()}
               </option>
             ))}
@@ -75,7 +89,7 @@ const DoctorDiagnosisForm = () => {
         </div>
 
         <div>
-          <label className="block mb-1">Diagnosis</label>
+          <label className="block mb-1 font-medium">Diagnosis</label>
           <textarea
             className="w-full p-2 border rounded"
             rows={3}
@@ -83,11 +97,12 @@ const DoctorDiagnosisForm = () => {
             onChange={(e) =>
               setFormData({ ...formData, diagnosis: e.target.value })
             }
+            placeholder="Enter diagnosis..."
           />
         </div>
 
         <div>
-          <label className="block mb-1">Prescription</label>
+          <label className="block mb-1 font-medium">Prescription</label>
           <textarea
             className="w-full p-2 border rounded"
             rows={3}
@@ -95,6 +110,7 @@ const DoctorDiagnosisForm = () => {
             onChange={(e) =>
               setFormData({ ...formData, prescription: e.target.value })
             }
+            placeholder="Enter prescription..."
           />
         </div>
 

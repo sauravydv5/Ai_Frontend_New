@@ -36,8 +36,28 @@ const DoctorLogin = () => {
       setLoading(false);
 
       if (res.data.token && res.data.doctor) {
+        const currentDoctor = res.data.doctor;
+
+        // Store token and current doctor
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem("doctor", JSON.stringify(res.data.doctor));
+        localStorage.setItem("doctor", JSON.stringify(currentDoctor));
+
+        // Update doctor list in localStorage
+        const existingList =
+          JSON.parse(localStorage.getItem("doctorList")) || [];
+
+        const alreadyExists = existingList.some(
+          (doc) => doc._id === currentDoctor._id
+        );
+
+        if (!alreadyExists) {
+          existingList.push({
+            _id: currentDoctor._id,
+            firstName: currentDoctor.firstName,
+            lastName: currentDoctor.lastName,
+          });
+          localStorage.setItem("doctorList", JSON.stringify(existingList));
+        }
 
         alert("Login successful!");
         navigate("/Doctor-dashboard");

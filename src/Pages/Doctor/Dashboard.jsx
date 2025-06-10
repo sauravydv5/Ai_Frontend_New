@@ -7,10 +7,13 @@ const Dashboard = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const doctor = JSON.parse(localStorage.getItem("doctor"));
+  const doctorName = doctor?.firstName || "Doctor";
+
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("doctor");
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
     navigate("/");
   };
 
@@ -82,18 +85,20 @@ const Dashboard = ({ children }) => {
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
             </div>
 
-            {/* User Profile */}
+            {/* ✅ Display Doctor's Name from LocalStorage */}
             <Link
               to="/profile"
               className="px-3 py-1 text-sm font-medium text-gray-700 transition bg-white border rounded-full shadow hover:bg-gray-100"
             >
-              Doctor
+              Hi, {doctorName}
             </Link>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6 overflow-auto bg-gray-50">Hello World</main>
+        <main className="flex-1 p-6 overflow-auto bg-gray-50">
+          {children || "Hello World"}
+        </main>
       </div>
     </div>
   );
