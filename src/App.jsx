@@ -18,6 +18,7 @@ import MyAppointments from "./Pages/Patient/MyAppointment";
 import ProfileView from "./Pages/Doctor/ProfileView";
 import DoctorDiagnosisForm from "./Pages/Doctor/DoctorDiagnosisForm";
 import PatientDiagnosisList from "./Pages/Patient/PatientDiagnosisList";
+import ChatBot from "./Pages/Patient/ChatBot";
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
         <Route path="/myappointemet" element={<MyAppointments />} />
         <Route path="/profileview" element={<ProfileView />} />
         <Route path="/doctordiagosisform" element={<DoctorDiagnosisForm />} />
+        <Route path="/chatbot" element={<ChatBot />} />
         <Route
           path="/patientdiagosisresult"
           element={<PatientDiagnosisList />}
