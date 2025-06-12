@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const DoctorList = () => {
@@ -8,42 +7,23 @@ const DoctorList = () => {
 
   const navigate = useNavigate();
 
-  const fetchDoctors = async () => {
-    try {
-      const res = await axios.get(
-        "http://localhost:3000/patient/applied-doctors",
-        {
-          withCredentials: true,
-        }
-      );
-      setDoctors(res.data.data || []);
-    } catch (error) {
-      console.error(
-        "Error fetching doctors:",
-        error.response?.data || error.message
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchDoctors();
+    const storedDoctors = JSON.parse(localStorage.getItem("doctors")) || [];
+    setDoctors(storedDoctors);
+    setLoading(false);
   }, []);
 
   const handleChat = (doctor) => {
-    // For now alert, but you can navigate to chat page like below
-    // navigate(`/chat/${doctor._id}`);
     alert(`Initiating chat with Dr. ${doctor.name}`);
+    // navigate(`/chat/${doctor._id}`);
   };
 
   const handleBookAppointment = (doctor) => {
-    // Navigate to booking page with doctor id
+    // You can also pass doctor ID using state or URL params
     navigate("/book-appointment/");
   };
 
   const handleViewProfile = (doctor) => {
-    // Navigate to doctor profile page
     navigate(`/doctor-profile/${doctor._id}`);
   };
 
@@ -68,13 +48,13 @@ const DoctorList = () => {
             >
               <div className="flex items-center gap-4">
                 <img
-                  src={doc.picture || "https://via.placeholder.com/100"}
+                  src={doc.photoUrl || "https://via.placeholder.com/100"}
                   alt={doc.name}
                   className="w-20 h-20 border-2 border-indigo-500 rounded-full shadow-md"
                 />
                 <div>
                   <h2 className="text-xl font-semibold text-gray-800">
-                    {doc.name}
+                    {doc.firstName}
                   </h2>
                   <span className="inline-block px-3 py-1 mt-1 text-xs font-medium text-white bg-green-600 rounded-full">
                     {doc.speciality}
@@ -90,7 +70,7 @@ const DoctorList = () => {
                   <strong>📞 Phone:</strong> {doc.phone}
                 </p>
                 <p>
-                  <strong>📧 Email:</strong> {doc.email}
+                  <strong>📧 Email:</strong> {doc.emailId}
                 </p>
                 <p>
                   <strong>⏰ Available:</strong> {doc.availableFrom} -{" "}

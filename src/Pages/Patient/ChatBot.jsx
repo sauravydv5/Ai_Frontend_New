@@ -6,16 +6,22 @@ const ChatBot = () => {
   const [chat, setChat] = useState([]);
   const [loading, setLoading] = useState(false);
   const [botTyping, setBotTyping] = useState("");
+  const [stopTyping, setStopTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
   const sendQuestion = async () => {
     if (!question.trim()) return;
 
-    const userMessage = { sender: "user", text: question };
+    const userMessage = {
+      sender: "user",
+      text: question,
+      timestamp: new Date().toLocaleTimeString(),
+    };
     setChat((prev) => [...prev, userMessage]);
     setLoading(true);
     setQuestion("");
     setBotTyping("");
+    setStopTyping(false);
 
     try {
       const res = await axios.post(
@@ -23,11 +29,10 @@ const ChatBot = () => {
         { question },
         { withCredentials: true }
       );
-
-      const botResponse = res.data.result || "I couldn't understand that.";
+      const botResponse = res.data.result || "Sorry, I didn't understand that.";
       await typeEffect(botResponse);
-    } catch (err) {
-      await typeEffect("⚠️ Error: Unable to get response from the server.");
+    } catch {
+      await typeEffect("⚠️ Server error. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -36,11 +41,19 @@ const ChatBot = () => {
   const typeEffect = async (text) => {
     let display = "";
     for (let i = 0; i < text.length; i++) {
+      if (stopTyping) return;
       display += text[i];
       setBotTyping(display);
-      await new Promise((resolve) => setTimeout(resolve, 15));
+      await new Promise((r) => setTimeout(r, 10)); // Faster typing
     }
-    setChat((prev) => [...prev, { sender: "bot", text }]);
+    setChat((prev) => [
+      ...prev,
+      {
+        sender: "bot",
+        text,
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
     setBotTyping("");
   };
 
@@ -53,35 +66,46 @@ const ChatBot = () => {
   }, [chat, botTyping]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-tr from-teal-100 via-purple-100 to-pink-100">
-      <div className="w-full max-w-2xl p-6 bg-white border border-gray-200 shadow-2xl rounded-2xl">
-        <h2 className="mb-6 text-4xl font-bold text-center text-purple-600">
-          🧠 MedBot Assistant
+    <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-tr from-orange-100 via-green-100 to-sky-100">
+      <div className="relative w-full max-w-2xl p-6 bg-white border border-gray-200 shadow-xl rounded-3xl">
+        {/* Floating Swāsthya AI Header */}
+        <div className="absolute flex items-center justify-center w-16 h-16 text-3xl text-white transform -translate-x-1/2 bg-green-600 border-4 border-white rounded-full shadow-lg -top-8 left-1/2">
+          🩺
+        </div>
+        <h2 className="mt-10 mb-2 text-2xl font-bold text-center text-green-700">
+          Swāsthya AI
         </h2>
+        <p className="mb-4 text-sm text-center text-gray-600">
+          Your Personal Health Assistant
+        </p>
 
-        <div className="p-4 mb-4 overflow-y-auto border shadow-inner h-96 rounded-xl bg-gray-50">
+        <div className="p-4 space-y-4 overflow-y-auto border border-gray-100 shadow-inner h-96 bg-gray-50 rounded-2xl">
           {chat.map((msg, i) => (
             <div
               key={i}
-              className={`flex mb-3 ${
-                msg.sender === "user" ? "justify-end" : "justify-start"
+              className={`flex flex-col ${
+                msg.sender === "user" ? "items-end" : "items-start"
               }`}
             >
               <div
-                className={`rounded-xl px-4 py-2 max-w-xs text-sm shadow-md ${
+                className={`relative px-4 py-2 max-w-xs rounded-2xl text-sm shadow-md ${
                   msg.sender === "user"
-                    ? "bg-blue-200 text-blue-900"
-                    : "bg-green-200 text-green-900"
+                    ? "bg-blue-500 text-white rounded-br-none"
+                    : "bg-green-100 text-green-900 rounded-bl-none"
                 }`}
               >
                 {msg.text}
+                <div className="text-[10px] text-right mt-1 opacity-60">
+                  {msg.timestamp}
+                </div>
               </div>
             </div>
           ))}
 
+          {/* Typing animation */}
           {botTyping && (
-            <div className="flex justify-start mb-3">
-              <div className="px-4 py-2 text-sm text-green-800 whitespace-pre-wrap bg-green-100 shadow-md rounded-xl animate-pulse">
+            <div className="flex items-start gap-2">
+              <div className="px-3 py-1 text-sm bg-green-200 rounded-2xl animate-pulse">
                 {botTyping}
               </div>
             </div>
@@ -90,22 +114,22 @@ const ChatBot = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-3 mt-4">
           <input
             type="text"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={loading}
-            placeholder="Ask a medical question..."
-            className="flex-1 px-4 py-2 text-sm border outline-none rounded-xl focus:ring-2 focus:ring-purple-400"
+            placeholder="Ask your health query..."
+            className="flex-1 px-4 py-2 border border-gray-300 shadow outline-none rounded-xl focus:ring-2 focus:ring-green-400"
           />
           <button
             onClick={sendQuestion}
             disabled={loading}
-            className="px-5 py-2 text-sm text-white bg-purple-600 rounded-xl hover:bg-purple-700 disabled:opacity-50"
+            className="px-5 py-2 text-white transition-all bg-green-600 shadow-md rounded-xl hover:bg-green-700 disabled:opacity-50"
           >
-            Send
+            {loading ? "..." : "Send"}
           </button>
         </div>
       </div>

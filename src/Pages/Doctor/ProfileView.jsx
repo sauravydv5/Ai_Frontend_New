@@ -62,14 +62,7 @@ const DoctorProfile = () => {
           </div>
         </div>
 
-        <div className="flex justify-center mt-10">
-          <button
-            onClick={() => navigate("/apply-doctor")}
-            className="px-6 py-2 text-white transition duration-300 bg-blue-600 rounded-md hover:bg-blue-700"
-          >
-            Apply as a Doctor
-          </button>
-        </div>
+        <div className="flex justify-center mt-10"></div>
       </div>
     </div>
   );

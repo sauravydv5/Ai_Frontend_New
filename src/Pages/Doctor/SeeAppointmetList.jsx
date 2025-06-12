@@ -6,6 +6,8 @@ const SeeAppointmentList = () => {
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState(null);
 
+  const patient = JSON.parse(localStorage.getItem("patient"));
+
   const fetchDoctorAppointments = async () => {
     try {
       setLoading(true);
@@ -71,8 +73,9 @@ const SeeAppointmentList = () => {
               {data.map((appt) => (
                 <tr key={appt._id} className="hover:bg-gray-50">
                   <td className="px-4 py-2 border">
-                    {appt.patient?.firstName} {appt.patient?.lastName}
+                    {appt?.patient?.name} {appt?.patient?.lastName}
                   </td>
+
                   <td className="px-4 py-2 border">
                     {new Date(appt.appointmentDate).toLocaleDateString()}
                   </td>

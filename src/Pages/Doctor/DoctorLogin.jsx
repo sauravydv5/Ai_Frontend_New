@@ -39,7 +39,7 @@ const DoctorLogin = () => {
         const currentDoctor = res.data.doctor;
 
         // Store token and current doctor
-        localStorage.setItem("token", res.data.token);
+        // localStorage.setItem("token", res.data.token);
         localStorage.setItem("doctor", JSON.stringify(currentDoctor));
 
         // Update doctor list in localStorage

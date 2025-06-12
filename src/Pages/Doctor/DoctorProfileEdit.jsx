@@ -1,0 +1,229 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+const DoctorProfileEdit = () => {
+  const [formData, setFormData] = useState({
+    _id: "",
+    name: "",
+    email: "",
+    phone: "",
+    speciality: "",
+    clinicAddress: "",
+    experienceYears: "",
+    availableFrom: "",
+    availableTo: "",
+  });
+
+  const [message, setMessage] = useState("");
+
+  const specialityOptions = [
+    "Cardiologist",
+    "Dermatologist",
+    "General Physician",
+    "Neurologist",
+    "Pediatrician",
+    "Psychiatrist",
+    "Orthopedic",
+    "ENT",
+    "Gynecologist",
+  ];
+
+  useEffect(() => {
+    const doctorData = JSON.parse(localStorage.getItem("doctor"));
+    if (doctorData) {
+      setFormData({
+        _id: doctorData._id || "",
+        name: doctorData.firstName || "",
+        email: doctorData.emailId || "",
+        phone: doctorData.phone || "",
+        speciality: doctorData.speciality || "",
+        clinicAddress: doctorData.clinicAddress || "",
+        experienceYears: doctorData.experienceYears || "",
+        availableFrom: doctorData.availableFrom || "",
+        availableTo: doctorData.availableTo || "",
+      });
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.patch(
+        "http://localhost:3000/doctor/profile/edit",
+        formData,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      setMessage(response.data.message || "Profile updated successfully");
+
+      const updatedDoctor = {
+        _id: formData._id, // ensure ID is retained
+        firstName: formData.name,
+        emailId: formData.email,
+        phone: formData.phone,
+        speciality: formData.speciality,
+        clinicAddress: formData.clinicAddress,
+        experienceYears: formData.experienceYears,
+        availableFrom: formData.availableFrom,
+        availableTo: formData.availableTo,
+        // add other static values if necessary like `role: "doctor"` etc.
+      };
+
+      // Sync local doctor list
+      const doctorArray = JSON.parse(localStorage.getItem("doctors")) || [];
+      const existingIndex = doctorArray.findIndex(
+        (doc) => doc._id === updatedDoctor._id
+      );
+
+      if (existingIndex !== -1) {
+        doctorArray[existingIndex] = updatedDoctor;
+      } else {
+        doctorArray.push(updatedDoctor);
+      }
+
+      localStorage.setItem("doctors", JSON.stringify(doctorArray));
+      localStorage.setItem("doctor", JSON.stringify(updatedDoctor)); // keep updated `_id`
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response?.data?.message || "Update failed.");
+    }
+  };
+
+  return (
+    <div className="flex flex-col max-w-6xl gap-8 p-4 mx-auto mt-10 lg:flex-row">
+      <div className="w-full p-6 bg-white shadow-md lg:w-2/3 rounded-xl">
+        <h2 className="mb-4 text-2xl font-bold text-center">
+          Edit Doctor Profile
+        </h2>
+        {message && <p className="mb-4 text-center text-blue-500">{message}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Name"
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            type="email"
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Phone"
+            className="w-full p-2 border rounded"
+          />
+          <select
+            name="speciality"
+            value={formData.speciality}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">Select Speciality</option>
+            {specialityOptions.map((opt, idx) => (
+              <option key={idx} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+          <input
+            name="clinicAddress"
+            value={formData.clinicAddress}
+            onChange={handleChange}
+            placeholder="Clinic Address"
+            className="w-full p-2 border rounded"
+          />
+          <input
+            name="experienceYears"
+            type="number"
+            value={formData.experienceYears}
+            onChange={handleChange}
+            placeholder="Experience (Years)"
+            className="w-full p-2 border rounded"
+          />
+          <div className="flex gap-4">
+            <div className="w-1/2">
+              <label>Available From</label>
+              <input
+                name="availableFrom"
+                type="time"
+                value={formData.availableFrom}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div className="w-1/2">
+              <label>Available To</label>
+              <input
+                name="availableTo"
+                type="time"
+                value={formData.availableTo}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="w-full p-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+          >
+            Update Profile
+          </button>
+        </form>
+      </div>
+
+      <div className="w-full p-6 bg-white shadow-md lg:w-1/3 rounded-xl">
+        <h3 className="mb-4 text-xl font-semibold text-center">
+          Profile Preview
+        </h3>
+        <div className="space-y-2 text-sm">
+          <p>
+            <strong>Name:</strong> {formData.name || "N/A"}
+          </p>
+          <p>
+            <strong>Email:</strong> {formData.email || "N/A"}
+          </p>
+          <p>
+            <strong>Phone:</strong> {formData.phone || "N/A"}
+          </p>
+          <p>
+            <strong>Speciality:</strong> {formData.speciality || "N/A"}
+          </p>
+          <p>
+            <strong>Clinic:</strong> {formData.clinicAddress || "N/A"}
+          </p>
+          <p>
+            <strong>Experience:</strong>{" "}
+            {formData.experienceYears
+              ? `${formData.experienceYears} years`
+              : "N/A"}
+          </p>
+          <p>
+            <strong>Available:</strong>{" "}
+            {formData.availableFrom && formData.availableTo
+              ? `${formData.availableFrom} - ${formData.availableTo}`
+              : "N/A"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DoctorProfileEdit;

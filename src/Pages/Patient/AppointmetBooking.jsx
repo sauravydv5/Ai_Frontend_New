@@ -1,21 +1,19 @@
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
-// import { useParams } from "react-router-dom";
 
 // const AppointmentBooking = () => {
-//   const { doctorId: routeDoctorId } = useParams(); // optional: pre-select doctor
 //   const [formData, setFormData] = useState({
-//     doctorId: "",
+//     doctor: "",
 //     appointmentDate: "",
 //     appointmentTime: "",
 //     reason: "",
 //   });
-
+//   console.log(formData);
 //   const [doctors, setDoctors] = useState([]);
 //   const [response, setResponse] = useState(null);
 //   const [loading, setLoading] = useState(false);
 
-//   // Fetch doctors on component mount
+//   // Fetch doctors on mount
 //   useEffect(() => {
 //     const fetchDoctors = async () => {
 //       try {
@@ -26,37 +24,28 @@
 //           }
 //         );
 
-//         // Ensure data is an array
-//         const doctorList = Array.isArray(res.data.data) ? res.data.data : [];
-
-//         setDoctors(doctorList);
-
-//         // If route has doctorId, pre-fill it
-//         if (routeDoctorId) {
-//           const found = doctorList.find((doc) => doc._id === routeDoctorId);
-//           if (found) {
-//             setFormData((prev) => ({
-//               ...prev,
-//               doctorId: found._id,
-//             }));
-//           }
+//         const data = res.data?.data || [];
+//         if (Array.isArray(data)) {
+//           setDoctors(data);
+//         } else {
+//           setDoctors([]);
 //         }
-//       } catch (error) {
-//         console.error("Failed to fetch doctors:", error);
-//         setDoctors([]); // prevent map error
+//       } catch (err) {
+//         console.error("Error fetching doctors:", err);
+//         setDoctors([]);
 //       }
 //     };
 
 //     fetchDoctors();
-//   }, [routeDoctorId]);
+//   }, []);
 
 //   const handleChange = (e) => {
-//     setFormData({
-//       ...formData,
+//     setFormData((prev) => ({
+//       ...prev,
 //       [e.target.name]: e.target.value,
-//     });
+//     }));
 //   };
-
+//   console.log(doctors);
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 //     setLoading(true);
@@ -64,13 +53,21 @@
 //       const res = await axios.post(
 //         "http://localhost:3000/appointments/appointmentCreate",
 //         formData,
-//         { withCredentials: true }
+//         {
+//           withCredentials: true,
+//         }
 //       );
-//       setResponse(res.data);
+//       setResponse({ success: true, message: res.data.message });
+//       setFormData({
+//         doctor: "",
+//         appointmentDate: "",
+//         appointmentTime: "",
+//         reason: "",
+//       });
 //     } catch (error) {
 //       setResponse({
 //         success: false,
-//         message: error.response?.data?.message || error.message,
+//         message: error.response?.data?.message || "Something went wrong",
 //       });
 //     } finally {
 //       setLoading(false);
@@ -84,24 +81,18 @@
 //       </h2>
 //       <form onSubmit={handleSubmit} className="space-y-4">
 //         <select
-//           name="doctorId"
-//           value={formData.doctorId}
+//           name="doctor"
+//           value={formData.doctor}
 //           onChange={handleChange}
 //           className="w-full p-3 border rounded-lg"
 //           required
 //         >
-//           <option value="" disabled>
-//             Select Doctor
-//           </option>
-//           {Array.isArray(doctors) && doctors.length > 0 ? (
-//             doctors.map((doc) => (
-//               <option key={doc._id} value={doc._id}>
-//                 {doc.name} ({doc.speciality})
-//               </option>
-//             ))
-//           ) : (
-//             <option disabled>No doctors found</option>
-//           )}
+//           <option value="">Select Doctor</option>
+//           {doctors.map((doc) => (
+//             <option key={doc._id} value={doc._id}>
+//               {doc.name} ({doc.speciality})
+//             </option>
+//           ))}
 //         </select>
 
 //         <input
@@ -112,6 +103,7 @@
 //           onChange={handleChange}
 //           required
 //         />
+
 //         <input
 //           type="time"
 //           name="appointmentTime"
@@ -120,6 +112,7 @@
 //           onChange={handleChange}
 //           required
 //         />
+
 //         <textarea
 //           name="reason"
 //           rows="3"
@@ -129,6 +122,7 @@
 //           onChange={handleChange}
 //           required
 //         ></textarea>
+
 //         <button
 //           type="submit"
 //           disabled={loading}
@@ -170,42 +164,26 @@ const AppointmentBooking = () => {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch doctors on mount
+  // Load doctors from localStorage
   useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:3000/patient/applied-doctors",
-          {
-            withCredentials: true,
-          }
-        );
-
-        const data = res.data?.data || [];
-        if (Array.isArray(data)) {
-          setDoctors(data);
-        } else {
-          setDoctors([]);
-        }
-      } catch (err) {
-        console.error("Error fetching doctors:", err);
-        setDoctors([]);
-      }
-    };
-
-    fetchDoctors();
+    const storedDoctors = JSON.parse(localStorage.getItem("doctors")) || [];
+    console.log("Loaded Doctors:", storedDoctors); // Debug
+    setDoctors(storedDoctors);
   }, []);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log(`Changing ${name}:`, value); // Debug
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log("Booking Data:", formData); // Debug
     try {
       const res = await axios.post(
         "http://localhost:3000/appointments/appointmentCreate",
@@ -237,6 +215,7 @@ const AppointmentBooking = () => {
         Book an Appointment
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Doctor Selection */}
         <select
           name="doctor"
           value={formData.doctor}
@@ -244,16 +223,15 @@ const AppointmentBooking = () => {
           className="w-full p-3 border rounded-lg"
           required
         >
-          <option value="" disabled>
-            Select Doctor
-          </option>
+          <option value="">Select Doctor</option>
           {doctors.map((doc) => (
-            <option key={doc._id} value={doc._id}>
-              {doc.name} ({doc.speciality})
+            <option key={doc._id} value={String(doc._id)}>
+              {doc.firstName || doc.name} ({doc.speciality})
             </option>
           ))}
         </select>
 
+        {/* Appointment Date */}
         <input
           type="date"
           name="appointmentDate"
@@ -263,6 +241,7 @@ const AppointmentBooking = () => {
           required
         />
 
+        {/* Appointment Time */}
         <input
           type="time"
           name="appointmentTime"
@@ -272,6 +251,7 @@ const AppointmentBooking = () => {
           required
         />
 
+        {/* Reason */}
         <textarea
           name="reason"
           rows="3"
@@ -282,6 +262,7 @@ const AppointmentBooking = () => {
           required
         ></textarea>
 
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
@@ -291,6 +272,7 @@ const AppointmentBooking = () => {
         </button>
       </form>
 
+      {/* Response Message */}
       {response && (
         <div
           className={`mt-4 p-4 rounded-lg ${

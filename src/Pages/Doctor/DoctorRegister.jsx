@@ -9,7 +9,9 @@ const DoctorRegister = () => {
     lastName: "",
     emailId: "",
     password: "",
+    registrationNumber: "",
   });
+
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -19,9 +21,16 @@ const DoctorRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { firstName, lastName, emailId, password } = formData;
+    const { firstName, lastName, emailId, password, registrationNumber } =
+      formData;
 
-    if (!firstName || !lastName || !emailId || !password) {
+    if (
+      !firstName ||
+      !lastName ||
+      !emailId ||
+      !password ||
+      !registrationNumber
+    ) {
       setError("All fields are required");
       return;
     }
@@ -34,6 +43,7 @@ const DoctorRegister = () => {
           lastName,
           emailId,
           password,
+          registrationNumber,
         },
         {
           headers: {
@@ -86,6 +96,19 @@ const DoctorRegister = () => {
               type="text"
               name="lastName"
               value={formData.lastName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">
+              Registration Number
+            </label>
+            <input
+              type="text"
+              name="registrationNumber"
+              value={formData.registrationNumber}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
