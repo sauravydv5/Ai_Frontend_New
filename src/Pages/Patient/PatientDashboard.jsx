@@ -1,19 +1,18 @@
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { Bell } from "lucide-react";
-import PatientMenu from "../../Components/PatientSidebar";
+import PatientMenu from "../../Components/PatientSidebar"; // Make sure paths are correct
 
-const PatientDashboard = ({ children }) => {
+const PatientDashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ Get patientInfo from localStorage
   const patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
   const patientName = patientInfo?.name || "Patient";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("patientInfo"); // clear stored patient data
+    localStorage.removeItem("patientInfo");
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     navigate("/");
   };
@@ -85,7 +84,7 @@ const PatientDashboard = ({ children }) => {
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
             </div>
 
-            {/* ✅ Show Patient Name */}
+            {/* Patient Name */}
             <Link
               to="/profile/view"
               className="px-3 py-1 text-sm font-medium text-gray-700 transition bg-white border rounded-full shadow hover:bg-gray-100"
@@ -95,9 +94,9 @@ const PatientDashboard = ({ children }) => {
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* Outlet for Nested Routes */}
         <main className="flex-1 p-6 overflow-auto bg-gray-50">
-          {children || "Hello From Dashboard"}
+          <Outlet />
         </main>
       </div>
     </div>
