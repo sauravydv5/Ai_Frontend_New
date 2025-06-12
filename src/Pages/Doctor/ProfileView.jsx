@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const DoctorProfile = () => {
   const [doctor, setDoctor] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const storedDoctor = localStorage.getItem("doctor");
+    const storedDoctor = localStorage.getItem("doctors");
     if (storedDoctor) {
-      setDoctor(JSON.parse(storedDoctor));
+      try {
+        const parsed = JSON.parse(storedDoctor);
+        // If it's an array (e.g. [{...}]), take the first doctor
+        const singleDoctor = Array.isArray(parsed) ? parsed[0] : parsed;
+        setDoctor(singleDoctor);
+      } catch (err) {
+        console.error("Failed to parse doctor from localStorage:", err);
+      }
     }
   }, []);
 
   if (!doctor) {
     return (
       <div className="flex items-center justify-center min-h-screen text-lg text-red-600">
-        No doctor profile found. Please login or apply.
+        No doctor profile found in localStorage.
       </div>
     );
   }
@@ -23,16 +28,13 @@ const DoctorProfile = () => {
   return (
     <div className="min-h-screen px-4 py-10 bg-gradient-to-b from-blue-100 to-white">
       <div className="max-w-3xl p-8 mx-auto bg-white shadow-lg rounded-2xl">
-        <div className="flex flex-col items-center">
-          <img
-            src={doctor?.picture || "/default-doctor.png"}
-            alt="Doctor"
-            className="object-cover w-32 h-32 mb-4 border-4 border-blue-300 rounded-full shadow-md"
-          />
-          <h2 className="mb-1 text-2xl font-bold text-blue-800">
-            {doctor.name}
+        <div className="text-center">
+          <h2 className="mb-2 text-3xl font-bold text-blue-800">
+            Dr. {doctor.firstName}
           </h2>
-          <p className="mb-4 italic text-gray-600">{doctor.speciality}</p>
+          <p className="mb-4 text-lg italic text-gray-600">
+            {doctor.speciality}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 mt-6 text-gray-700 md:grid-cols-2">
@@ -61,8 +63,6 @@ const DoctorProfile = () => {
             <p>{doctor.availableTo}</p>
           </div>
         </div>
-
-        <div className="flex justify-center mt-10"></div>
       </div>
     </div>
   );

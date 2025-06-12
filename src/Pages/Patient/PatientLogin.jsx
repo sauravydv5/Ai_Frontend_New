@@ -31,11 +31,13 @@ const PatientLogin = () => {
         { withCredentials: true }
       );
 
-      console.log("Login Response:", res.data);
-
-      if (res.data.token) {
+      if (res.data.token && res.data.user) {
+        // ✅ Save token
         localStorage.setItem("token", res.data.token);
+
+        // ✅ Save complete patient info
         localStorage.setItem("patientInfo", JSON.stringify(res.data.user));
+
         alert("Login successful!");
         navigate("/Patient-dashboard");
       } else {

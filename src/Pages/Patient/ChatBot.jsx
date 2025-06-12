@@ -44,7 +44,7 @@ const ChatBot = () => {
       if (stopTyping) return;
       display += text[i];
       setBotTyping(display);
-      await new Promise((r) => setTimeout(r, 10)); // Faster typing
+      await new Promise((r) => setTimeout(r, 10));
     }
     setChat((prev) => [
       ...prev,
@@ -66,8 +66,8 @@ const ChatBot = () => {
   }, [chat, botTyping]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-tr from-orange-100 via-green-100 to-sky-100">
-      <div className="relative w-full max-w-2xl p-6 bg-white border border-gray-200 shadow-xl rounded-3xl">
+    <div className="flex flex-col w-full h-full px-4 py-6 bg-gradient-to-tr from-orange-100 via-green-100 to-sky-100">
+      <div className="relative flex flex-col w-full h-full max-w-3xl p-6 mx-auto bg-white border border-gray-200 shadow-xl rounded-3xl">
         {/* Floating Swāsthya AI Header */}
         <div className="absolute flex items-center justify-center w-16 h-16 text-3xl text-white transform -translate-x-1/2 bg-green-600 border-4 border-white rounded-full shadow-lg -top-8 left-1/2">
           🩺
@@ -79,7 +79,8 @@ const ChatBot = () => {
           Your Personal Health Assistant
         </p>
 
-        <div className="p-4 space-y-4 overflow-y-auto border border-gray-100 shadow-inner h-96 bg-gray-50 rounded-2xl">
+        {/* Chat Area */}
+        <div className="flex-1 p-4 space-y-4 overflow-y-auto border border-gray-100 shadow-inner bg-gray-50 rounded-2xl">
           {chat.map((msg, i) => (
             <div
               key={i}
@@ -110,10 +111,10 @@ const ChatBot = () => {
               </div>
             </div>
           )}
-
           <div ref={messagesEndRef} />
         </div>
 
+        {/* Input */}
         <div className="flex flex-wrap gap-3 mt-4">
           <input
             type="text"

@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
-import { Bell } from "lucide-react";
-import PatientMenu from "../../Components/PatientSidebar"; // Make sure paths are correct
+import PatientMenu from "../../Components/PatientSidebar";
 
 const PatientDashboard = () => {
   const location = useLocation();
@@ -15,7 +14,29 @@ const PatientDashboard = () => {
     localStorage.removeItem("patientInfo");
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     navigate("/");
+    window.location.reload();
   };
+
+  const quotes = [
+    "Your health is your wealth 💚",
+    "Stay hydrated, stay energized 💧",
+    "Mental health is just as important 🧠",
+    "A healthy lifestyle is a journey 🚶‍♂️",
+    "Prevention is powerful 🛡️",
+    "Eat well, feel well 🍎",
+    "Wellness begins from within 🌱",
+    "Sleep is the best meditation 💤",
+  ];
+
+  const [quoteIndex, setQuoteIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % quotes.length);
+    }, 15000); // change every 15s
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex h-screen font-sans bg-gray-100">
@@ -32,7 +53,7 @@ const PatientDashboard = () => {
             </p>
           </div>
 
-          {/* Menu Items */}
+          {/* Menu */}
           <nav className="px-4 py-6 space-y-2">
             {PatientMenu.map((menu, index) => {
               const isActive = location.pathname === menu.path;
@@ -52,13 +73,12 @@ const PatientDashboard = () => {
               );
             })}
 
-            {/* Logout Button */}
+            {/* Logout */}
             <div
               onClick={handleLogout}
               className="flex items-center w-full p-3 mt-4 text-sm font-medium text-left transition-all duration-300 rounded-lg cursor-pointer hover:bg-red-600 hover:shadow-lg"
             >
-              <span className="mr-3 text-lg">🚪</span>
-              Logout
+              <span className="mr-3 text-lg">🚪</span> Logout
             </div>
           </nav>
 
@@ -72,29 +92,39 @@ const PatientDashboard = () => {
       {/* Main Content */}
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Header */}
-        <header className="flex items-center justify-between h-16 px-4 border-b shadow-sm bg-gradient-to-r from-white to-gray-50">
-          <div className="text-2xl font-semibold text-gray-700 lg:hidden">
-            ☰
-          </div>
+        <header className="flex items-center justify-between h-16 px-6 border-b shadow-sm bg-gradient-to-r from-white to-gray-100">
+          <div className="text-xl font-semibold text-gray-700 lg:hidden">☰</div>
 
           <div className="flex items-center gap-4 ml-auto">
-            {/* Notification Bell */}
-            <div className="relative p-2 transition bg-gray-100 rounded-full shadow cursor-pointer hover:bg-gray-200">
-              <Bell className="w-5 h-5 text-gray-700" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+            {/* Date & Health Quote */}
+            <div className="flex-col hidden text-sm text-right md:flex">
+              <span className="font-semibold text-gray-500">
+                {new Date().toLocaleDateString("en-IN", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </span>
+              <span className="text-base italic text-teal-600">
+                {quotes[quoteIndex]}
+              </span>
             </div>
 
-            {/* Patient Name */}
+            {/* Profile */}
             <Link
-              to="/profile/view"
-              className="px-3 py-1 text-sm font-medium text-gray-700 transition bg-white border rounded-full shadow hover:bg-gray-100"
+              to="/patient-dashboard/profileview"
+              className="px-4 py-1 text-sm font-medium text-gray-700 transition bg-white border rounded-full shadow hover:bg-gray-100"
             >
-              Hi, {patientName}
+              Hi,
+              {patientInfo?.firstName
+                ? patientInfo.firstName
+                : patientInfo?.name}
             </Link>
           </div>
         </header>
 
-        {/* Outlet for Nested Routes */}
+        {/* Nested Routes Content */}
         <main className="flex-1 p-6 overflow-auto bg-gray-50">
           <Outlet />
         </main>
