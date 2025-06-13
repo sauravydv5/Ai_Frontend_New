@@ -12,6 +12,7 @@ const DoctorProfileEdit = () => {
     experienceYears: "",
     availableFrom: "",
     availableTo: "",
+    photoUrl: "",
   });
 
   const [message, setMessage] = useState("");
@@ -41,6 +42,7 @@ const DoctorProfileEdit = () => {
         experienceYears: doctorData.experienceYears || "",
         availableFrom: doctorData.availableFrom || "",
         availableTo: doctorData.availableTo || "",
+        photoUrl: doctorData.photoUrl || "", // <-- ensure this is saved
       });
     }
   }, []);
@@ -64,6 +66,7 @@ const DoctorProfileEdit = () => {
 
       setMessage(response.data.message || "Profile updated successfully");
 
+      // Update localStorage doctor object
       const updatedDoctor = {
         _id: formData._id,
         firstName: formData.name,
@@ -74,20 +77,9 @@ const DoctorProfileEdit = () => {
         experienceYears: formData.experienceYears,
         availableFrom: formData.availableFrom,
         availableTo: formData.availableTo,
+        photoUrl: formData.photoUrl,
       };
 
-      const doctorArray = JSON.parse(localStorage.getItem("doctors")) || [];
-      const existingIndex = doctorArray.findIndex(
-        (doc) => doc._id === updatedDoctor._id
-      );
-
-      if (existingIndex !== -1) {
-        doctorArray[existingIndex] = updatedDoctor;
-      } else {
-        doctorArray.push(updatedDoctor);
-      }
-
-      localStorage.setItem("doctors", JSON.stringify(doctorArray));
       localStorage.setItem("doctor", JSON.stringify(updatedDoctor));
     } catch (err) {
       console.error(err);
@@ -97,12 +89,30 @@ const DoctorProfileEdit = () => {
 
   return (
     <div className="flex flex-col max-w-6xl gap-8 p-4 mx-auto mt-10 lg:flex-row">
+      {/* Form Panel */}
       <div className="w-full p-6 bg-white shadow-md lg:w-2/3 rounded-xl">
         <h2 className="mb-4 text-2xl font-bold text-center">
           Edit Doctor Profile
         </h2>
         {message && <p className="mb-4 text-center text-blue-500">{message}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Profile Photo URL */}
+          <div>
+            <label htmlFor="photoUrl" className="block mb-1 font-medium">
+              Profile Photo URL
+            </label>
+            <input
+              id="photoUrl"
+              name="photoUrl"
+              type="url"
+              value={formData.photoUrl}
+              onChange={handleChange}
+              placeholder="Enter image URL"
+              className="w-full p-2 border rounded"
+            />
+          </div>
+
+          {/* Other Fields */}
           <div>
             <label htmlFor="name" className="block mb-1 font-medium">
               Full Name
@@ -192,7 +202,7 @@ const DoctorProfileEdit = () => {
               type="number"
               value={formData.experienceYears}
               onChange={handleChange}
-              placeholder="Experience (Years)"
+              placeholder="Experience"
               className="w-full p-2 border rounded"
             />
           </div>
@@ -235,10 +245,20 @@ const DoctorProfileEdit = () => {
         </form>
       </div>
 
+      {/* Profile Preview Panel */}
       <div className="w-full p-6 bg-white shadow-md lg:w-1/3 rounded-xl">
         <h3 className="mb-4 text-xl font-semibold text-center">
           Profile Preview
         </h3>
+        {formData.photoUrl ? (
+          <img
+            src={formData.photoUrl}
+            alt="Doctor"
+            className="object-cover w-32 h-32 mx-auto mb-4 border rounded-full"
+          />
+        ) : (
+          <p className="text-center text-gray-500">No photo added</p>
+        )}
         <div className="space-y-2 text-sm">
           <p>
             <strong>Name:</strong> {formData.name || "N/A"}

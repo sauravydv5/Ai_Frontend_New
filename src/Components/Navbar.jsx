@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Stethoscope, User } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,121 +8,118 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "About" },
-    { name: "Blog" },
+    { name: "About", path: "/about" },
+    { name: "Blog", path: "/blog" },
   ];
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-[#5B5B8F] sticky top-0 z-50 shadow-md backdrop-blur-md bg-opacity-90">
+    <nav className="bg-[#5B5B8F] sticky top-0 z-50 shadow-lg backdrop-blur-md bg-opacity-95">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <img src="/image/logo.jpeg" alt="Logo" className="w-auto h-9" />
-            <span className="text-2xl font-extrabold tracking-wide text-white">
-              SwasthyaAI
-            </span>
+            <img
+              src="/image/logo.jpeg"
+              alt="Logo"
+              className="object-cover w-10 h-10 rounded-full"
+            />
+            <span className="text-2xl font-bold text-white">SwasthyaAI</span>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden space-x-10 text-lg font-semibold text-white md:flex">
+          {/* Desktop Nav Links */}
+          <div className="items-center hidden space-x-10 text-lg font-medium text-white md:flex">
             {navLinks.map(({ name, path }) => (
               <Link
                 key={name}
                 to={path}
-                className={`relative px-3 py-2 rounded-md transition-colors ${
-                  isActive(path)
-                    ? "text-yellow-400"
-                    : "hover:text-yellow-300 hover:bg-yellow-900/20"
+                className={`relative hover:text-yellow-300 transition ${
+                  isActive(path) ? "text-yellow-400" : ""
                 }`}
               >
                 {name}
                 {isActive(path) && (
-                  <span className="absolute left-0 -bottom-1 w-full h-0.5 bg-yellow-400 rounded"></span>
+                  <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-yellow-400 rounded"></span>
                 )}
               </Link>
             ))}
           </div>
 
-          {/* Buttons on desktop */}
-          <div className="hidden space-x-4 md:flex">
+          {/* Desktop Buttons */}
+          <div className="items-center hidden gap-4 md:flex">
             <Link
               to="/doctorlogin"
-              className="px-5 py-2 rounded-full border border-white text-white font-semibold hover:bg-white hover:text-[#5B5B8F] transition"
+              className="flex items-center gap-2 px-4 py-2 text-white transition bg-blue-600 border border-blue-300 rounded-full shadow-md hover:bg-white hover:text-blue-600"
             >
-              Start as Doctor
+              <Stethoscope size={18} /> Doctor
             </Link>
             <Link
               to="/patientlogin"
-              className="px-5 py-2 rounded-full border border-white text-white font-semibold hover:bg-white hover:text-[#5B5B8F] transition"
+              className="flex items-center gap-2 px-4 py-2 text-white transition bg-green-600 border border-green-300 rounded-full shadow-md hover:bg-white hover:text-green-600"
             >
-              Start as Patient
+              <User size={18} /> Patient
             </Link>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Toggle */}
           <button
-            aria-label="Toggle menu"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex flex-col items-center justify-center space-y-1 md:hidden focus:outline-none"
+            className="flex flex-col items-center justify-center space-y-1 md:hidden"
           >
             <span
-              className={`block h-1 w-6 bg-white rounded transition-transform duration-300 ${
-                isOpen ? "rotate-45 translate-y-2" : ""
+              className={`block w-6 h-0.5 bg-white transition-transform ${
+                isOpen ? "rotate-45 translate-y-1.5" : ""
               }`}
             />
             <span
-              className={`block h-1 w-6 bg-white rounded transition-opacity duration-300 ${
+              className={`block w-6 h-0.5 bg-white transition-opacity ${
                 isOpen ? "opacity-0" : "opacity-100"
               }`}
             />
             <span
-              className={`block h-1 w-6 bg-white rounded transition-transform duration-300 ${
-                isOpen ? "-rotate-45 -translate-y-2" : ""
+              className={`block w-6 h-0.5 bg-white transition-transform ${
+                isOpen ? "-rotate-45 -translate-y-1.5" : ""
               }`}
             />
           </button>
         </div>
 
         {/* Mobile Menu */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isOpen ? "max-h-96 mt-2" : "max-h-0"
-          }`}
-        >
-          <div className="flex flex-col px-2 pb-4 space-y-4 text-lg font-semibold text-white">
-            {navLinks.map(({ name, path }) => (
+        {isOpen && (
+          <div className="mt-2 space-y-4 text-lg font-medium text-white md:hidden">
+            <div className="flex flex-col gap-2 px-2 pb-4">
+              {navLinks.map(({ name, path }) => (
+                <Link
+                  key={name}
+                  to={path}
+                  onClick={() => setIsOpen(false)}
+                  className={`px-4 py-2 rounded-md ${
+                    isActive(path)
+                      ? "bg-yellow-400 text-[#5B5B8F]"
+                      : "hover:bg-yellow-900/30"
+                  }`}
+                >
+                  {name}
+                </Link>
+              ))}
               <Link
-                key={name}
-                to={path}
+                to="/doctorlogin"
                 onClick={() => setIsOpen(false)}
-                className={`px-4 py-2 rounded-md ${
-                  isActive(path)
-                    ? "bg-yellow-400 text-[#5B5B8F]"
-                    : "hover:bg-yellow-900/30"
-                }`}
+                className="flex items-center justify-center gap-2 px-4 py-2 transition bg-blue-600 border border-blue-200 rounded-full shadow hover:bg-white hover:text-blue-600"
               >
-                {name}
+                <Stethoscope size={18} /> Doctor
               </Link>
-            ))}
-            <Link
-              to="/doctorlogin"
-              onClick={() => setIsOpen(false)}
-              className="block px-5 py-2 rounded-full border border-white text-white font-semibold hover:bg-white hover:text-[#5B5B8F] text-center"
-            >
-              Start as Doctor
-            </Link>
-            <Link
-              to="/patientlogin"
-              onClick={() => setIsOpen(false)}
-              className="block px-5 py-2 rounded-full border border-white text-white font-semibold hover:bg-white hover:text-[#5B5B8F] text-center"
-            >
-              Start as Patient
-            </Link>
+              <Link
+                to="/patientlogin"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center gap-2 px-4 py-2 transition bg-green-600 border border-green-200 rounded-full shadow hover:bg-white hover:text-green-600"
+              >
+                <User size={18} /> Patient
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </nav>
   );
