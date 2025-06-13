@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../utils/constant";
 
 const Home1 = () => {
   const [doctor, setDoctor] = useState({
@@ -46,7 +47,7 @@ const Home1 = () => {
     const fetchAppointments = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:3000/appointments/appointments-list",
+          BASE_URL + "/appointments/appointments-list",
           { withCredentials: true }
         );
         setAppointments(data.data || []);

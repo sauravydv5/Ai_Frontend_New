@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../../utils/constant";
 
 const PatientLogin = () => {
   const navigate = useNavigate();
@@ -25,11 +26,9 @@ const PatientLogin = () => {
     }
 
     try {
-      const res = await axios.post(
-        "http://localhost:3000/patient/login",
-        formData,
-        { withCredentials: true }
-      );
+      const res = await axios.post(BASE_URL + "/patient/login", formData, {
+        withCredentials: true,
+      });
 
       if (res.data.token && res.data.user) {
         // ✅ Save token

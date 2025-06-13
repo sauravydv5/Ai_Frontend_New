@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../../utils/constant";
 
 const EditPatientProfile = () => {
   const [formData, setFormData] = useState({
@@ -37,10 +38,9 @@ const EditPatientProfile = () => {
 
     const fetchProfile = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:3000/patient/profile",
-          { withCredentials: true }
-        );
+        const { data } = await axios.get(BASE_URL + "/patient/profile", {
+          withCredentials: true,
+        });
         const profile = data.data;
         const allowedFields = Object.keys(formData);
         const filteredProfile = {};
@@ -76,7 +76,7 @@ const EditPatientProfile = () => {
 
     try {
       const { data } = await axios.patch(
-        "http://localhost:3000/patient/profile/edit",
+        BASE_URL + "/patient/profile/edit",
         formData,
         { withCredentials: true }
       );

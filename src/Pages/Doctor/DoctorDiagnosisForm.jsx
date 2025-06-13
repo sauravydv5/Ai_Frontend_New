@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import debounce from "lodash/debounce";
+import { BASE_URL } from "../../utils/constant";
 
 const DoctorDiagnosisForm = () => {
   const [appointments, setAppointments] = useState([]);
@@ -16,7 +17,7 @@ const DoctorDiagnosisForm = () => {
     debounce(async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/appointments/appointments-list",
+          BASE_URL + "/appointments/appointments-list",
           { withCredentials: true }
         );
 
@@ -54,9 +55,11 @@ const DoctorDiagnosisForm = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/appointments/submitdiagnosis",
+        BASE_URL + "/appointments/submitdiagnosis",
         formData,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
 
       setMessage("✅ Diagnosis submitted successfully!");

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../../utils/constant";
 
 const DoctorList = () => {
   const [doctors, setDoctors] = useState([]);
@@ -11,7 +12,7 @@ const DoctorList = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/doctor/list");
+        const res = await axios.get(BASE_URL + "/doctor/list");
         setDoctors(res.data.doctors || []);
       } catch (err) {
         setError("Failed to fetch doctors.");

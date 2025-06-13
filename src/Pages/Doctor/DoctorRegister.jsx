@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../utils/constant";
 
 const DoctorRegister = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const DoctorRegister = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/doctor/signup",
+        BASE_URL + "/doctor/signup",
         {
           firstName,
           lastName,

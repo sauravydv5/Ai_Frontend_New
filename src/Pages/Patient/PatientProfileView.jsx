@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { Loader } from "lucide-react";
+import { BASE_URL } from "../../utils/constant";
 
 const PatientProfileView = () => {
   const [profile, setProfile] = useState(null);
@@ -9,12 +10,9 @@ const PatientProfileView = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:3000/patient/updatedprofile/view",
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.get(BASE_URL + "/patient/updatedprofile/view", {
+        withCredentials: true,
+      });
       setProfile(res.data?.data || null);
     } catch (error) {
       console.error("Error fetching patient profile:", error);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../utils/constant";
 
 const PatientDiagnosisList = () => {
   const [appointments, setAppointments] = useState([]);
@@ -10,7 +11,7 @@ const PatientDiagnosisList = () => {
     const fetchDiagnosis = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/appointments/getdigonsisresult",
+          BASE_URL + "/appointments/getdigonsisresult",
           { withCredentials: true }
         );
         setAppointments(res.data.data);

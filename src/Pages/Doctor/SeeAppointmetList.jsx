@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../utils/constant";
 
 const SeeAppointmentList = () => {
   const [appointments, setAppointments] = useState([]);
@@ -10,7 +11,7 @@ const SeeAppointmentList = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:3000/appointments/appointments-list",
+        BASE_URL + "/appointments/appointments-list",
         { withCredentials: true }
       );
       const all = res.data.data;
@@ -84,7 +85,7 @@ const SeeAppointmentList = () => {
                 <th className="px-4 py-2 border">Time</th>
                 <th className="px-4 py-2 border">Status</th>
                 {title === "Pending Requests" && (
-                  <th className="px-4 py-2 border text-center">Actions</th>
+                  <th className="px-4 py-2 text-center border">Actions</th>
                 )}
               </tr>
             </thead>
@@ -115,7 +116,7 @@ const SeeAppointmentList = () => {
                     </span>
                   </td>
                   {title === "Pending Requests" && (
-                    <td className="px-4 py-2 border text-center space-x-2">
+                    <td className="px-4 py-2 space-x-2 text-center border">
                       <button
                         disabled={processingId === appt._id}
                         onClick={() =>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../utils/constant";
 
 const PatientRegister = () => {
   const navigate = useNavigate();
@@ -29,10 +30,7 @@ const PatientRegister = () => {
     }
 
     try {
-      const res = await axios.post(
-        "http://localhost:3000/patient/signup",
-        formData
-      );
+      const res = await axios.post(BASE_URL + "/patient/signup", formData);
 
       if (res.data.message === "Patient registered successfully") {
         alert("Registered successfully!");

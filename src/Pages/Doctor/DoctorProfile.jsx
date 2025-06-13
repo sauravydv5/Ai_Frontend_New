@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../utils/constant";
 
 const DoctorProfile = () => {
   const [doctor, setDoctor] = useState(null);
@@ -9,7 +10,7 @@ const DoctorProfile = () => {
   useEffect(() => {
     const fetchDoctorList = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/doctor/list");
+        const res = await axios.get(BASE_URL + "/doctor/list");
         const doctors = res.data.doctors;
 
         if (!doctors || doctors.length === 0) {

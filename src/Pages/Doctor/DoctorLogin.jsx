@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../utils/constant";
 
 const DoctorLogin = () => {
   const navigate = useNavigate();
@@ -29,11 +30,9 @@ const DoctorLogin = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(
-        "http://localhost:3000/doctor/login",
-        formData,
-        { withCredentials: true }
-      );
+      const res = await axios.post(BASE_URL + "/doctor/login", formData, {
+        withCredentials: true,
+      });
       setLoading(false);
 
       if (res.data.token && res.data.doctor) {

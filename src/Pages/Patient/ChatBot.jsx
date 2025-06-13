@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../utils/constant";
 
 const ChatBot = () => {
   const [question, setQuestion] = useState("");
@@ -25,7 +26,7 @@ const ChatBot = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/chatbot",
+        +BASE_URL + "/chatbot",
         { question },
         { withCredentials: true }
       );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../utils/constant";
 
 const DoctorProfileEdit = () => {
   const [formData, setFormData] = useState({
@@ -56,7 +57,7 @@ const DoctorProfileEdit = () => {
     e.preventDefault();
     try {
       const response = await axios.patch(
-        "http://localhost:3000/doctor/profile/edit",
+        BASE_URL + "/doctor/profile/edit",
         formData,
         {
           headers: { "Content-Type": "application/json" },

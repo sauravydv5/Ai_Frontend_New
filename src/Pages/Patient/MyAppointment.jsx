@@ -7,6 +7,7 @@ import {
   AlertCircle,
   User,
 } from "lucide-react";
+import { BASE_URL } from "../../utils/constant";
 
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -17,10 +18,9 @@ const MyAppointments = () => {
 
   const fetchMyAppointments = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:3000/appointments/my-appointments",
-        { withCredentials: true }
-      );
+      const res = await axios.get(BASE_URL + "/appointments/my-appointments", {
+        withCredentials: true,
+      });
       setAppointments(res.data.data);
     } catch (err) {
       console.error("Error fetching appointments:", err);
