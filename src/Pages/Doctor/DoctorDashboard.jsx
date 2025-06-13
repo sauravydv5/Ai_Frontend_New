@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
-import { Bell } from "lucide-react";
 import DoctorMenu from "../../Components/DoctorSidebar";
 
 const DoctorDashboard = () => {
@@ -10,54 +9,45 @@ const DoctorDashboard = () => {
   const doctor = JSON.parse(localStorage.getItem("doctor"));
   const doctorName = doctor?.firstName || "Doctor";
 
-  const handleLogout = () => {
-    localStorage.removeItem("doctor");
-    localStorage.removeItem("token");
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    navigate("/", { replace: true });
-    window.location.reload();
-  };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [quoteIndex, setQuoteIndex] = useState(0);
 
   const quotes = [
     "Health is wealth 💪",
     "A calm mind brings inner strength ✨",
     "Eat healthy, stay healthy 🍎",
     "Prevention is better than cure 🩺",
-    "An ounce of prevention is worth a pound of cure",
     "Good health is true wealth",
     "Your body hears everything your mind says",
     "Happiness is the highest form of health",
     "Take care of your body, it’s the only place you have to live",
-    "Health is a relationship between you and your body",
-    "Self-care is how you take your power back",
-    "Healthy outside starts from the inside",
-    "Let food be thy medicine",
-    "Every human being is the author of their own health",
-    "Movement is a medicine",
-    "You are what you eat",
-    "Nourish to flourish",
-    "Don't dig your grave with your own knife and fork",
-    "To keep the body in good health is a duty",
-    "Wellness is the natural state of my body",
   ];
-
-  const [quoteIndex, setQuoteIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % quotes.length);
-    }, 15000); // 15 seconds
-
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 
-  const appointmentCount = 2;
+  const handleLogout = () => {
+    localStorage.removeItem("doctor");
+    localStorage.removeItem("token");
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    navigate("/");
+    window.location.reload();
+  };
 
   return (
     <div className="flex h-screen font-sans bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 text-white shadow-lg bg-gradient-to-b from-indigo-900 to-purple-700">
+      <aside
+        className={`fixed top-0 left-0 z-40 h-full w-64 transform bg-gradient-to-b from-indigo-900 to-purple-700 text-white shadow-lg transition-transform duration-300 md:relative md:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <div className="flex flex-col justify-between h-full">
+          {/* Logo */}
           <div className="py-6 text-center border-b border-purple-600">
             <h1 className="text-3xl font-extrabold tracking-wide text-transparent bg-gradient-to-r from-cyan-400 via-purple-300 to-pink-500 bg-clip-text drop-shadow-md">
               Swāthya AI
@@ -65,6 +55,7 @@ const DoctorDashboard = () => {
             <p className="mt-1 text-xs italic text-gray-300">Doctor Panel</p>
           </div>
 
+          {/* Menu */}
           <nav className="px-4 py-6 space-y-2">
             {DoctorMenu.map((menu, index) => {
               const isActive = location.pathname === menu.path;
@@ -77,6 +68,7 @@ const DoctorDashboard = () => {
                       ? "bg-white text-gray-900 shadow-inner"
                       : "hover:bg-purple-600 hover:shadow-lg"
                   }`}
+                  onClick={() => setSidebarOpen(false)}
                 >
                   <span className="mr-3 text-lg">{menu.icon}</span>
                   {menu.name}
@@ -84,6 +76,7 @@ const DoctorDashboard = () => {
               );
             })}
 
+            {/* Logout */}
             <div
               onClick={handleLogout}
               className="flex items-center p-3 mt-4 text-sm font-medium transition-all duration-300 rounded-lg cursor-pointer hover:bg-red-600 hover:shadow-lg"
@@ -92,20 +85,36 @@ const DoctorDashboard = () => {
             </div>
           </nav>
 
+          {/* Footer */}
           <div className="p-4 text-sm text-center border-t border-purple-600">
             © 2025 Swāthya
           </div>
         </div>
       </aside>
 
-      {/* Main */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <header className="flex items-center justify-between h-16 px-6 border-b shadow-sm bg-gradient-to-r from-white to-gray-100">
-          <div className="text-xl font-semibold text-gray-700 lg:hidden">☰</div>
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black bg-opacity-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-          <div className="flex items-center gap-4 ml-auto">
-            {/* Date & Quote */}
-            <div className="flex-col hidden ml-2 text-sm text-right md:flex">
+      {/* Main Content */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Header */}
+        <header className="flex items-center justify-between h-16 px-4 shadow-sm bg-gradient-to-r from-white to-gray-100 md:px-6">
+          {/* Hamburger */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="text-2xl text-gray-600 md:hidden"
+          >
+            ☰
+          </button>
+
+          {/* Date & Quote */}
+          <div className="items-center hidden gap-4 ml-auto md:flex">
+            <div className="flex-col hidden text-sm text-right md:flex">
               <span className="font-semibold text-gray-500">
                 {new Date().toLocaleDateString("en-IN", {
                   weekday: "short",
@@ -119,17 +128,11 @@ const DoctorDashboard = () => {
               </span>
             </div>
 
-            {/* View Appointments Button + Bell */}
+            {/* View Appointments (Without Bell Icon & Count) */}
             <Link
               to="/doctor-dashboard/appointments"
-              className="items-center hidden gap-2 px-3 py-1 text-xs font-medium text-white transition bg-indigo-500 rounded-full shadow md:flex hover:bg-indigo-600"
+              className="px-3 py-1 text-xs font-medium text-white transition bg-indigo-500 rounded-full shadow hover:bg-indigo-600"
             >
-              <Bell className="w-4 h-4" />
-              {appointmentCount > 0 && (
-                <span className="relative inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full shadow ring-2 ring-white">
-                  {appointmentCount}
-                </span>
-              )}
               View Appointments
             </Link>
 
@@ -143,8 +146,8 @@ const DoctorDashboard = () => {
           </div>
         </header>
 
-        {/* Content */}
-        <main className="flex-1 p-6 overflow-auto bg-gray-50">
+        {/* Page Content */}
+        <main className="flex-1 p-4 overflow-auto md:p-6 bg-gray-50">
           <Outlet />
         </main>
       </div>

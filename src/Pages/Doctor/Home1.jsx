@@ -150,12 +150,6 @@ const Home1 = () => {
                     {a.appointmentTime} • {a.reason || "General Checkup"}
                   </p>
                 </div>
-                <button
-                  onClick={() => navigate(`/doctor/submit-diagnosis/${a._id}`)}
-                  className="px-3 py-1 text-sm text-white bg-green-600 shadow rounded-xl hover:bg-green-700 w-fit"
-                >
-                  Start
-                </button>
               </li>
             ))}
           </ul>
