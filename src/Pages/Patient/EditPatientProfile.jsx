@@ -19,51 +19,31 @@ const EditPatientProfile = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Load from localStorage first
     const localPatient = localStorage.getItem("patientInfo");
     if (localPatient) {
       const profile = JSON.parse(localPatient);
-      setFormData({
-        firstName: profile.firstName || "",
-        emailId: profile.emailId || "",
-        phone: profile.phone || "",
-        age: profile.age || "",
-        gender: profile.gender || "",
-        address: profile.address || "",
-        bloodGroup: profile.bloodGroup || "",
-        medicalHistory: profile.medicalHistory || "",
-        emergencyContact: profile.emergencyContact || "",
-        allergies: profile.allergies || "",
-      });
+      setFormData((prev) => ({
+        ...prev,
+        ...profile,
+      }));
     }
 
-    // Then fetch latest profile from backend
     const fetchProfile = async () => {
       try {
         const { data } = await axios.get(
           "http://localhost:3000/patient/profile",
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
 
         const profile = data.data;
-        setFormData({
-          firstName: profile.firstName || "",
-          emailId: profile.emailId || "",
-          phone: profile.phone || "",
-          age: profile.age || "",
-          gender: profile.gender || "",
-          address: profile.address || "",
-          bloodGroup: profile.bloodGroup || "",
-          medicalHistory: profile.medicalHistory || "",
-          emergencyContact: profile.emergencyContact || "",
-          allergies: profile.allergies || "",
-        });
+        setFormData((prev) => ({
+          ...prev,
+          ...profile,
+        }));
 
         localStorage.setItem("patientInfo", JSON.stringify(profile));
       } catch (err) {
-        toast.error("Failed to load profile from server");
+        toast.error("Failed to load profile");
       }
     };
 
@@ -91,23 +71,7 @@ const EditPatientProfile = () => {
 
       toast.success(data.message || "Profile updated successfully");
 
-      // Update essential fields in localStorage
-      const existing = JSON.parse(localStorage.getItem("patientInfo")) || {};
-      const updated = {
-        ...existing,
-        firstName: formData.firstName,
-        emailId: formData.emailId,
-        gender: formData.gender,
-        phone: formData.phone,
-        address: formData.address,
-        age: formData.age,
-        bloodGroup: formData.bloodGroup,
-        medicalHistory: formData.medicalHistory,
-        emergencyContact: formData.emergencyContact,
-        allergies: formData.allergies,
-        updatedAt: new Date().toISOString(),
-      };
-
+      const updated = { ...formData, updatedAt: new Date().toISOString() };
       localStorage.setItem("patientInfo", JSON.stringify(updated));
     } catch (err) {
       toast.error(err.response?.data?.message || "Update failed");
@@ -117,13 +81,14 @@ const EditPatientProfile = () => {
   };
 
   return (
-    <div className="max-w-3xl p-6 mx-auto bg-white rounded-lg shadow">
-      <h2 className="mb-6 text-2xl font-semibold text-teal-700">
-        Edit Profile
-      </h2>
+    <div className="max-w-4xl px-6 py-10 mx-auto bg-white rounded-xl shadow-md">
+      <h1 className="mb-6 text-3xl font-bold text-center text-teal-700">
+        Edit Patient Profile
+      </h1>
+
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+        className="grid grid-cols-1 gap-6 sm:grid-cols-2"
       >
         {[
           { name: "firstName", label: "Full Name" },
@@ -138,15 +103,20 @@ const EditPatientProfile = () => {
           { name: "emergencyContact", label: "Emergency Contact" },
         ].map(({ name, label, type = "text" }) => (
           <div key={name} className="flex flex-col">
-            <label className="mb-1 text-sm font-medium text-gray-600">
+            <label
+              htmlFor={name}
+              className="mb-2 text-sm font-semibold text-gray-700"
+            >
               {label}
             </label>
             <input
-              type={type}
+              id={name}
               name={name}
+              type={type}
               value={formData[name] || ""}
               onChange={handleChange}
-              className="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+              className="px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              placeholder={`Enter your ${label.toLowerCase()}`}
             />
           </div>
         ))}
@@ -155,7 +125,7 @@ const EditPatientProfile = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-2 text-white transition bg-teal-600 rounded hover:bg-teal-700"
+            className="w-full py-3 font-semibold text-white bg-teal-600 rounded-md hover:bg-teal-700 transition"
           >
             {loading ? "Updating..." : "Update Profile"}
           </button>

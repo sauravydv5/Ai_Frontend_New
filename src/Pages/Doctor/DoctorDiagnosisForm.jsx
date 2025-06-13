@@ -43,7 +43,7 @@ const DoctorDiagnosisForm = () => {
         { withCredentials: true }
       );
 
-      setMessage("Diagnosis submitted successfully!");
+      setMessage("✅ Diagnosis submitted successfully!");
       const newEntry = {
         appointmentId: formData.appointmentId,
         diagnosis: formData.diagnosis,
@@ -51,17 +51,14 @@ const DoctorDiagnosisForm = () => {
         submittedAt: new Date().toISOString(),
       };
 
-      // ✅ Save to localStorage
       const previous = JSON.parse(localStorage.getItem("diagnosisData")) || [];
       localStorage.setItem(
         "diagnosisData",
         JSON.stringify([...previous, newEntry])
       );
 
-      // Clear form
       setFormData({ appointmentId: "", diagnosis: "", prescription: "" });
 
-      // Refresh appointments
       const refreshed = await axios.get(
         "http://localhost:3000/appointments/appointments-list",
         { withCredentials: true }
@@ -72,31 +69,46 @@ const DoctorDiagnosisForm = () => {
       setAppointments(updated);
     } catch (err) {
       console.error("Submission error:", err);
-      setMessage("Submission failed. Please try again.");
+      setMessage("❌ Submission failed. Please try again.");
     }
   };
 
   return (
-    <div className="max-w-xl p-6 mx-auto bg-white rounded shadow">
-      <h2 className="mb-4 text-2xl font-semibold">Submit Diagnosis</h2>
+    <div className="max-w-xl p-6 mx-auto bg-white rounded-lg shadow-md mt-8">
+      <h2 className="mb-4 text-2xl font-bold text-center text-blue-700">
+        Submit Diagnosis & Prescription
+      </h2>
 
-      {message && <p className="mb-4 text-green-600">{message}</p>}
+      {message && (
+        <p
+          className={`mb-4 text-center font-medium ${
+            message.includes("successfully") ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {message}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1 font-medium">Select Appointment</label>
           <select
-            className="w-full p-2 border rounded"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={formData.appointmentId}
             onChange={(e) =>
               setFormData({ ...formData, appointmentId: e.target.value })
             }
+            required
           >
             <option value="">-- Select --</option>
             {appointments.map((appt) => (
               <option key={appt._id} value={appt._id}>
-                {appt.patientName} (ID: {appt.patientId}) -{" "}
-                {new Date(appt.appointmentDate).toLocaleDateString()}
+                {appt.name} —{" "}
+                {new Date(appt.appointmentDate).toLocaleDateString("en-IN", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
               </option>
             ))}
           </select>
@@ -105,7 +117,7 @@ const DoctorDiagnosisForm = () => {
         <div>
           <label className="block mb-1 font-medium">Diagnosis</label>
           <textarea
-            className="w-full p-2 border rounded"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             rows={3}
             value={formData.diagnosis}
             onChange={(e) =>
@@ -119,7 +131,7 @@ const DoctorDiagnosisForm = () => {
         <div>
           <label className="block mb-1 font-medium">Prescription</label>
           <textarea
-            className="w-full p-2 border rounded"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             rows={3}
             value={formData.prescription}
             onChange={(e) =>
@@ -132,9 +144,9 @@ const DoctorDiagnosisForm = () => {
 
         <button
           type="submit"
-          className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+          className="w-full px-4 py-2 font-semibold text-white bg-blue-600 rounded hover:bg-blue-700"
         >
-          Submit
+          Submit Diagnosis
         </button>
       </form>
     </div>

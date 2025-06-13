@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const DoctorLogin = () => {
   const navigate = useNavigate();
@@ -37,12 +38,8 @@ const DoctorLogin = () => {
 
       if (res.data.token && res.data.doctor) {
         const currentDoctor = res.data.doctor;
-
-        // Store token and current doctor
-        // localStorage.setItem("token", res.data.token);
         localStorage.setItem("doctor", JSON.stringify(currentDoctor));
 
-        // Update doctor list in localStorage
         const existingList =
           JSON.parse(localStorage.getItem("doctorList")) || [];
 
@@ -59,7 +56,7 @@ const DoctorLogin = () => {
           localStorage.setItem("doctorList", JSON.stringify(existingList));
         }
 
-        alert("Login successful!");
+        toast.success("Login successful!");
         navigate("/Doctor-dashboard");
       } else {
         setError(res.data.message || "Login failed");

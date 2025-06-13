@@ -9,6 +9,8 @@ const PatientDashboard = () => {
   const patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
   const patientName = patientInfo?.name || "Patient";
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("patientInfo");
@@ -29,47 +31,23 @@ const PatientDashboard = () => {
   ];
 
   const [quoteIndex, setQuoteIndex] = useState(0);
-  const [currentDateTime, setCurrentDateTime] = useState(
-    new Date().toLocaleString("en-IN", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    })
-  );
 
   useEffect(() => {
-    const quoteInterval = setInterval(() => {
+    const interval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % quotes.length);
-    }, 15000);
+    }, 15000); // 15s interval
 
-    const timeInterval = setInterval(() => {
-      setCurrentDateTime(
-        new Date().toLocaleString("en-IN", {
-          weekday: "short",
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
-      );
-    }, 60000);
-
-    return () => {
-      clearInterval(quoteInterval);
-      clearInterval(timeInterval);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="flex h-screen font-sans bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 text-white shadow-lg bg-gradient-to-b from-green-700 to-teal-900">
+      <aside
+        className={`fixed top-0 left-0 z-40 h-full w-64 transform bg-gradient-to-b from-green-700 to-teal-900 text-white shadow-lg transition-transform duration-300 md:relative md:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <div className="flex flex-col justify-between h-full">
           {/* Logo */}
           <div className="py-6 text-center border-b border-teal-600">
@@ -94,6 +72,7 @@ const PatientDashboard = () => {
                       ? "bg-white text-gray-900 shadow-inner"
                       : "hover:bg-teal-600 hover:shadow-lg"
                   }`}
+                  onClick={() => setSidebarOpen(false)}
                 >
                   <span className="mr-3 text-lg">{menu.icon}</span>
                   {menu.name}
@@ -117,17 +96,36 @@ const PatientDashboard = () => {
         </div>
       </aside>
 
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black bg-opacity-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Header */}
-        <header className="flex items-center justify-between h-16 px-6 border-b shadow-sm bg-gradient-to-r from-white to-gray-100">
-          <div className="text-xl font-semibold text-gray-700 lg:hidden">☰</div>
+        <header className="flex items-center justify-between h-16 px-4 shadow-sm bg-gradient-to-r from-white to-gray-100 md:px-6">
+          {/* Hamburger */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="text-2xl text-gray-600 md:hidden"
+          >
+            ☰
+          </button>
 
-          <div className="flex items-center gap-4 ml-auto">
-            {/* Date & Time & Quote */}
+          {/* Date & Quote */}
+          <div className="items-center hidden gap-4 ml-auto md:flex">
             <div className="flex-col hidden text-sm text-right md:flex">
               <span className="font-semibold text-gray-500">
-                {currentDateTime}
+                {new Date().toLocaleDateString("en-IN", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
               </span>
               <span className="text-base italic text-teal-600">
                 {quotes[quoteIndex]}
@@ -147,8 +145,8 @@ const PatientDashboard = () => {
           </div>
         </header>
 
-        {/* Nested Routes Content */}
-        <main className="flex-1 p-6 overflow-auto bg-gray-50">
+        {/* Page Content */}
+        <main className="flex-1 p-4 overflow-auto md:p-6 bg-gray-50">
           <Outlet />
         </main>
       </div>

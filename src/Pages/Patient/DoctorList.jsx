@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const DoctorList = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedDoctors = JSON.parse(localStorage.getItem("doctors")) || [];
-    setDoctors(storedDoctors);
-    setLoading(false);
+    const fetchDoctors = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/doctor/list"); // Replace with your live/backend API if hosted
+        setDoctors(res.data.doctors || []);
+      } catch (err) {
+        setError("Failed to fetch doctors.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
   }, []);
 
   const handleBookAppointment = (doctor) => {
-    navigate("/patient-dashboard/book-appointment");
+    navigate("/patient-dashboard/book-appointment", { state: { doctor } });
   };
 
   const handleViewProfile = (doctor) => {
@@ -28,6 +40,8 @@ const DoctorList = () => {
 
       {loading ? (
         <p className="text-lg text-center text-gray-500">Loading doctors...</p>
+      ) : error ? (
+        <p className="text-lg text-center text-red-500">{error}</p>
       ) : doctors.length === 0 ? (
         <p className="text-lg text-center text-red-500">
           No doctors available.

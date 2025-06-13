@@ -15,7 +15,7 @@ import DoctorList from "./Pages/Patient/DoctorList";
 import BookAppointment from "./Pages/Patient/AppointmetBooking";
 import SeeAppointmentList from "./Pages/Doctor/SeeAppointmetList";
 import MyAppointments from "./Pages/Patient/MyAppointment";
-import ProfileView from "./Pages/Doctor/ProfileView";
+import ProfileView from "./Pages/Doctor/DoctorProfile";
 import DoctorDiagnosisForm from "./Pages/Doctor/DoctorDiagnosisForm";
 import PatientDiagnosisList from "./Pages/Patient/PatientDiagnosisList";
 import ChatBot from "./Pages/Patient/ChatBot";
