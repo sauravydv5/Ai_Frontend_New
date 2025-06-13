@@ -29,13 +29,41 @@ const PatientDashboard = () => {
   ];
 
   const [quoteIndex, setQuoteIndex] = useState(0);
+  const [currentDateTime, setCurrentDateTime] = useState(
+    new Date().toLocaleString("en-IN", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+  );
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const quoteInterval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % quotes.length);
-    }, 15000); // change every 15s
+    }, 15000);
 
-    return () => clearInterval(interval);
+    const timeInterval = setInterval(() => {
+      setCurrentDateTime(
+        new Date().toLocaleString("en-IN", {
+          weekday: "short",
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
+      );
+    }, 60000);
+
+    return () => {
+      clearInterval(quoteInterval);
+      clearInterval(timeInterval);
+    };
   }, []);
 
   return (
@@ -96,15 +124,10 @@ const PatientDashboard = () => {
           <div className="text-xl font-semibold text-gray-700 lg:hidden">☰</div>
 
           <div className="flex items-center gap-4 ml-auto">
-            {/* Date & Health Quote */}
+            {/* Date & Time & Quote */}
             <div className="flex-col hidden text-sm text-right md:flex">
               <span className="font-semibold text-gray-500">
-                {new Date().toLocaleDateString("en-IN", {
-                  weekday: "short",
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
+                {currentDateTime}
               </span>
               <span className="text-base italic text-teal-600">
                 {quotes[quoteIndex]}
@@ -116,7 +139,7 @@ const PatientDashboard = () => {
               to="/patient-dashboard/profileview"
               className="px-4 py-1 text-sm font-medium text-gray-700 transition bg-white border rounded-full shadow hover:bg-gray-100"
             >
-              Hi,
+              Hi,{" "}
               {patientInfo?.firstName
                 ? patientInfo.firstName
                 : patientInfo?.name}

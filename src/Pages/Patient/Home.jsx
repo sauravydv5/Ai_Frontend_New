@@ -16,7 +16,7 @@ const Home = () => {
   return (
     <div className="w-full px-6 py-10 bg-gray-50 min-h-[90vh]">
       <h1 className="mb-1 text-2xl font-semibold text-green-700">
-        Hi, {user.name} 👋
+        Hi, {user.firstName} 👋
       </h1>
       <p className="mb-6 text-gray-600">
         Here's your personalized health summary and updates.
