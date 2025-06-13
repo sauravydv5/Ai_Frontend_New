@@ -45,7 +45,7 @@ const Home = () => {
   return (
     <div className="w-full px-6 py-10 bg-gray-50 min-h-[90vh] animate-fadeIn">
       <h1 className="mb-1 text-2xl font-semibold text-green-700 animate-slideDown">
-        Hi, {user.firstName} 👋
+        Hi, {user?.firstName ? user.firstName : user?.name || "User"} 👋
       </h1>
       <p className="mb-6 text-gray-600">{motivationalQuotes[quoteIndex]}</p>
 

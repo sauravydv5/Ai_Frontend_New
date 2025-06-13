@@ -49,7 +49,7 @@ const PatientDiagnosisList = () => {
                 <th className="px-4 py-3 text-left">Doctor</th>
                 <th className="px-4 py-3 text-left">Date</th>
                 <th className="px-4 py-3 text-left">Reason</th>
-                <th className="px-4 py-3 text-left">Diagnosis</th>
+                {/* <th className="px-4 py-3 text-left">Diagnosis</th> */}
                 <th className="px-4 py-3 text-left">Prescription</th>
               </tr>
             </thead>
@@ -63,9 +63,9 @@ const PatientDiagnosisList = () => {
                     {new Date(appt.appointmentDate).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3">{appt.reason}</td>
-                  <td className="px-4 py-3 text-gray-800 whitespace-pre-wrap">
+                  {/* <td className="px-4 py-3 text-gray-800 whitespace-pre-wrap">
                     {appt.diagnosis}
-                  </td>
+                  </td> */}
                   <td className="px-4 py-3 text-green-700 whitespace-pre-wrap">
                     {appt.prescription}
                   </td>

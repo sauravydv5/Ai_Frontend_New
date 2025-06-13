@@ -65,7 +65,7 @@ const DoctorProfileEdit = () => {
       setMessage(response.data.message || "Profile updated successfully");
 
       const updatedDoctor = {
-        _id: formData._id, // ensure ID is retained
+        _id: formData._id,
         firstName: formData.name,
         emailId: formData.email,
         phone: formData.phone,
@@ -74,10 +74,8 @@ const DoctorProfileEdit = () => {
         experienceYears: formData.experienceYears,
         availableFrom: formData.availableFrom,
         availableTo: formData.availableTo,
-        // add other static values if necessary like `role: "doctor"` etc.
       };
 
-      // Sync local doctor list
       const doctorArray = JSON.parse(localStorage.getItem("doctors")) || [];
       const existingIndex = doctorArray.findIndex(
         (doc) => doc._id === updatedDoctor._id
@@ -90,7 +88,7 @@ const DoctorProfileEdit = () => {
       }
 
       localStorage.setItem("doctors", JSON.stringify(doctorArray));
-      localStorage.setItem("doctor", JSON.stringify(updatedDoctor)); // keep updated `_id`
+      localStorage.setItem("doctor", JSON.stringify(updatedDoctor));
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || "Update failed.");
@@ -105,62 +103,107 @@ const DoctorProfileEdit = () => {
         </h2>
         {message && <p className="mb-4 text-center text-blue-500">{message}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Name"
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            type="email"
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="Phone"
-            className="w-full p-2 border rounded"
-          />
-          <select
-            name="speciality"
-            value={formData.speciality}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          >
-            <option value="">Select Speciality</option>
-            {specialityOptions.map((opt, idx) => (
-              <option key={idx} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-          <input
-            name="clinicAddress"
-            value={formData.clinicAddress}
-            onChange={handleChange}
-            placeholder="Clinic Address"
-            className="w-full p-2 border rounded"
-          />
-          <input
-            name="experienceYears"
-            type="number"
-            value={formData.experienceYears}
-            onChange={handleChange}
-            placeholder="Experience (Years)"
-            className="w-full p-2 border rounded"
-          />
+          <div>
+            <label htmlFor="name" className="block mb-1 font-medium">
+              Full Name
+            </label>
+            <input
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Name"
+              className="w-full p-2 border rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className="block mb-1 font-medium">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email"
+              type="email"
+              className="w-full p-2 border rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="phone" className="block mb-1 font-medium">
+              Phone
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Phone"
+              className="w-full p-2 border rounded"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="speciality" className="block mb-1 font-medium">
+              Speciality
+            </label>
+            <select
+              id="speciality"
+              name="speciality"
+              value={formData.speciality}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">Select Speciality</option>
+              {specialityOptions.map((opt, idx) => (
+                <option key={idx} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="clinicAddress" className="block mb-1 font-medium">
+              Clinic Address
+            </label>
+            <input
+              id="clinicAddress"
+              name="clinicAddress"
+              value={formData.clinicAddress}
+              onChange={handleChange}
+              placeholder="Clinic Address"
+              className="w-full p-2 border rounded"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="experienceYears" className="block mb-1 font-medium">
+              Experience (Years)
+            </label>
+            <input
+              id="experienceYears"
+              name="experienceYears"
+              type="number"
+              value={formData.experienceYears}
+              onChange={handleChange}
+              placeholder="Experience (Years)"
+              className="w-full p-2 border rounded"
+            />
+          </div>
+
           <div className="flex gap-4">
             <div className="w-1/2">
-              <label>Available From</label>
+              <label htmlFor="availableFrom" className="block mb-1 font-medium">
+                Available From
+              </label>
               <input
+                id="availableFrom"
                 name="availableFrom"
                 type="time"
                 value={formData.availableFrom}
@@ -169,8 +212,11 @@ const DoctorProfileEdit = () => {
               />
             </div>
             <div className="w-1/2">
-              <label>Available To</label>
+              <label htmlFor="availableTo" className="block mb-1 font-medium">
+                Available To
+              </label>
               <input
+                id="availableTo"
                 name="availableTo"
                 type="time"
                 value={formData.availableTo}
@@ -179,6 +225,7 @@ const DoctorProfileEdit = () => {
               />
             </div>
           </div>
+
           <button
             type="submit"
             className="w-full p-2 text-white bg-blue-600 rounded hover:bg-blue-700"
