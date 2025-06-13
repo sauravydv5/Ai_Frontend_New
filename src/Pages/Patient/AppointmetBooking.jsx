@@ -15,10 +15,23 @@ const AppointmentBooking = () => {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Load doctors from localStorage
+  // ✅ Fetch only accepted doctors from API
   useEffect(() => {
-    const storedDoctors = JSON.parse(localStorage.getItem("doctors")) || [];
-    setDoctors(storedDoctors);
+    const fetchDoctors = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/doctor/list`, {
+          withCredentials: true,
+        });
+        const acceptedDoctors = (res.data.doctors || []).filter(
+          (doc) => doc.status === "Accepted"
+        );
+        setDoctors(acceptedDoctors);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+        setDoctors([]);
+      }
+    };
+    fetchDoctors();
   }, []);
 
   const handleChange = (e) => {
@@ -34,7 +47,7 @@ const AppointmentBooking = () => {
     setLoading(true);
     try {
       const res = await axios.post(
-        BASE_URL + "/appointments/appointmentCreate",
+        `${BASE_URL}/appointments/appointmentCreate`,
         formData,
         { withCredentials: true }
       );
@@ -82,11 +95,16 @@ const AppointmentBooking = () => {
           required
         >
           <option value="">Select Doctor</option>
-          {doctors.map((doc) => (
-            <option key={doc._id} value={String(doc._id)}>
-              {doc.firstName || doc.name} ({doc.speciality || "Specialist"})
-            </option>
-          ))}
+          {doctors.length > 0 ? (
+            doctors.map((doc) => (
+              <option key={doc._id} value={doc._id}>
+                {doc.firstName} {doc.lastName} ({doc.speciality || "Specialist"}
+                )
+              </option>
+            ))
+          ) : (
+            <option disabled>Loading doctors...</option>
+          )}
         </select>
 
         {/* Appointment Date */}
@@ -109,7 +127,7 @@ const AppointmentBooking = () => {
           required
         />
 
-        {/* Reason */}
+        {/* Reason Field */}
         <textarea
           name="reason"
           rows="3"

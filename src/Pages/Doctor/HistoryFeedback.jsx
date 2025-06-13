@@ -7,52 +7,30 @@ import {
   Users,
   RefreshCcw,
 } from "lucide-react";
+import axios from "axios";
+import { BASE_URL } from "../../utils/constant";
 
 const DoctorHistory = () => {
   const [history, setHistory] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loadHistoryFromStorage = () => {
+  const fetchDoctorStats = async () => {
     try {
-      const accepted =
-        JSON.parse(localStorage.getItem("acceptedAppointments")) || [];
-      const rejected =
-        JSON.parse(localStorage.getItem("rejectedAppointments")) || [];
-
-      const totalAppointments = accepted.length + rejected.length;
-
-      const diagnosedAppointments = accepted.filter(
-        (a) => a.diagnosis && a.prescription
-      ).length;
-
-      const uniquePatients = new Set(
-        accepted.map((a) => a?.patient?._id || a?.patientId)
-      ).size;
-
-      const feedbacks =
-        JSON.parse(localStorage.getItem("doctorFeedbacks")) || [];
-
-      const profileUpdates =
-        parseInt(localStorage.getItem("profileUpdateCount")) || 0;
-
-      setHistory({
-        totalAppointments,
-        acceptedAppointments: accepted.length,
-        rejectedAppointments: rejected.length,
-        diagnosedAppointments,
-        uniquePatientCount: uniquePatients,
-        feedbacks,
-        profileUpdates,
+      const res = await axios.get(`${BASE_URL}/doctor/activity-history`, {
+        withCredentials: true,
       });
+
+      setHistory(res.data.data);
     } catch (error) {
-      console.error("Error loading local data:", error);
+      console.error("Failed to fetch doctor history:", error);
+      setHistory(null);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadHistoryFromStorage();
+    fetchDoctorStats();
   }, []);
 
   if (loading) {

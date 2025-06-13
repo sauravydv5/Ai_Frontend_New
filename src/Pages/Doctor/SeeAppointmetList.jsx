@@ -14,14 +14,7 @@ const SeeAppointmentList = () => {
         BASE_URL + "/appointments/appointments-list",
         { withCredentials: true }
       );
-      const all = res.data.data;
-      setAppointments(all);
-
-      const accepted = all.filter((a) => a.status === "accepted");
-      const rejected = all.filter((a) => a.status === "rejected");
-
-      localStorage.setItem("acceptedAppointments", JSON.stringify(accepted));
-      localStorage.setItem("rejectedAppointments", JSON.stringify(rejected));
+      setAppointments(res.data.data || []);
     } catch (err) {
       alert("Failed to load appointments.");
     } finally {
@@ -36,23 +29,13 @@ const SeeAppointmentList = () => {
   const updateAppointmentStatus = async (id, status) => {
     setProcessingId(id);
     try {
-      const url = `http://localhost:3000/appointments/updateStatus/${id}`;
+      const url = `${BASE_URL}/appointments/updateStatus/${id}`;
       await axios.patch(url, { status }, { withCredentials: true });
 
       const updatedAppointments = appointments.map((appt) =>
         appt._id === id ? { ...appt, status } : appt
       );
       setAppointments(updatedAppointments);
-
-      const accepted = updatedAppointments.filter(
-        (a) => a.status === "accepted"
-      );
-      const rejected = updatedAppointments.filter(
-        (a) => a.status === "rejected"
-      );
-
-      localStorage.setItem("acceptedAppointments", JSON.stringify(accepted));
-      localStorage.setItem("rejectedAppointments", JSON.stringify(rejected));
     } catch (err) {
       alert("Failed to update appointment status.");
     } finally {

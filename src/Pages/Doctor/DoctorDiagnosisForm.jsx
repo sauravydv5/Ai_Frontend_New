@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import debounce from "lodash/debounce";
 import { BASE_URL } from "../../utils/constant";
 
 const DoctorDiagnosisForm = () => {
@@ -12,74 +11,42 @@ const DoctorDiagnosisForm = () => {
   });
   const [message, setMessage] = useState("");
 
-  // Debounced fetchAppointments
-  const fetchAppointments = useCallback(
-    debounce(async () => {
-      try {
-        const res = await axios.get(
-          BASE_URL + "/appointments/appointments-list",
-          { withCredentials: true }
-        );
+  const fetchAppointments = useCallback(async () => {
+    try {
+      const res = await axios.get(
+        BASE_URL + "/appointments/appointments-list",
+        { withCredentials: true }
+      );
 
-        const pending = res.data.data.filter(
-          (a) => a.status === "accepted" && (!a.diagnosis || !a.prescription)
-        );
+      const pending = res.data.data.filter(
+        (a) => a.status === "accepted" && (!a.diagnosis || !a.prescription)
+      );
 
-        setAppointments(pending);
-      } catch (err) {
-        console.error("Error fetching appointments:", err);
-      }
-    }, 300), // Debounce time: 300ms
-    []
-  );
+      setAppointments(pending);
+    } catch (err) {
+      console.error("Error fetching appointments:", err);
+    }
+  }, []);
 
   useEffect(() => {
     fetchAppointments();
-
-    // Cancel debounce on unmount
-    return () => {
-      fetchAppointments.cancel();
-    };
   }, [fetchAppointments]);
 
-  // Debounced handler for textareas
-  const handleInputChange = debounce((name, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }, 300);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        BASE_URL + "/appointments/submitdiagnosis",
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
+      await axios.post(BASE_URL + "/appointments/submitdiagnosis", formData, {
+        withCredentials: true,
+      });
 
       setMessage("✅ Diagnosis submitted successfully!");
-
-      const newEntry = {
-        appointmentId: formData.appointmentId,
-        diagnosis: formData.diagnosis,
-        prescription: formData.prescription,
-        submittedAt: new Date().toISOString(),
-      };
-
-      const previous = JSON.parse(localStorage.getItem("diagnosisData")) || [];
-      localStorage.setItem(
-        "diagnosisData",
-        JSON.stringify([...previous, newEntry])
-      );
-
       setFormData({ appointmentId: "", diagnosis: "", prescription: "" });
-
-      // Refresh appointments
       fetchAppointments();
     } catch (err) {
       console.error("Submission error:", err);
@@ -108,16 +75,15 @@ const DoctorDiagnosisForm = () => {
           <label className="block mb-1 font-medium">Select Appointment</label>
           <select
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            name="appointmentId"
             value={formData.appointmentId}
-            onChange={(e) =>
-              setFormData({ ...formData, appointmentId: e.target.value })
-            }
+            onChange={handleChange}
             required
           >
             <option value="">-- Select --</option>
             {appointments.map((appt) => (
               <option key={appt._id} value={appt._id}>
-                {appt.name} —{" "}
+                {appt.patient?.name || "Unnamed Patient"} —{" "}
                 {new Date(appt.appointmentDate).toLocaleDateString("en-IN", {
                   day: "2-digit",
                   month: "short",
@@ -133,8 +99,9 @@ const DoctorDiagnosisForm = () => {
           <textarea
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             rows={3}
-            defaultValue={formData.diagnosis}
-            onChange={(e) => handleInputChange("diagnosis", e.target.value)}
+            name="diagnosis"
+            value={formData.diagnosis}
+            onChange={handleChange}
             placeholder="Enter diagnosis..."
             required
           />
@@ -145,8 +112,9 @@ const DoctorDiagnosisForm = () => {
           <textarea
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             rows={3}
-            defaultValue={formData.prescription}
-            onChange={(e) => handleInputChange("prescription", e.target.value)}
+            name="prescription"
+            value={formData.prescription}
+            onChange={handleChange}
             placeholder="Enter prescription..."
             required
           />
