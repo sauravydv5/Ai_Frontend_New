@@ -43,117 +43,113 @@ const SeeAppointmentList = () => {
     }
   };
 
-  const pending = appointments.filter((a) => a.status === "pending");
-  const accepted = appointments.filter((a) => a.status === "accepted");
-  const rejected = appointments.filter((a) => a.status === "rejected");
+  const groupedAppointments = {
+    pending: appointments.filter((a) => a.status === "pending"),
+    accepted: appointments.filter((a) => a.status === "accepted"),
+    rejected: appointments.filter((a) => a.status === "rejected"),
+  };
 
-  const renderTable = (title, data, color) => (
-    <div className="mb-10 overflow-hidden bg-white shadow-xl rounded-xl">
-      <div className={`px-6 py-4 border-b ${color.bg}`}>
-        <h3 className={`text-xl font-bold ${color.text}`}>
-          {title} <span className="ml-1 text-sm">({data.length})</span>
-        </h3>
-      </div>
-      <div className="overflow-x-auto">
-        {data.length === 0 ? (
-          <p className="p-4 text-center text-gray-500">
-            No appointments available.
+  const statusColors = {
+    pending: "bg-yellow-100 text-yellow-800",
+    accepted: "bg-green-100 text-green-800",
+    rejected: "bg-red-100 text-red-800",
+  };
+
+  const AppointmentCard = ({ appt, showActions }) => {
+    const fullName = appt.patient
+      ? `${appt.patient.firstName || ""} ${appt.patient.lastName || ""}`
+      : appt.name || "Unknown Patient";
+
+    return (
+      <div className="p-4 transition bg-white border rounded-lg shadow-md hover:shadow-lg">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-semibold">{fullName}</h3>
+          <span
+            className={`px-3 py-1 text-xs font-bold rounded-full capitalize ${
+              statusColors[appt.status]
+            }`}
+          >
+            {appt.status}
+          </span>
+        </div>
+        <p className="text-sm text-gray-600">
+          <strong>Date:</strong>{" "}
+          {new Date(appt.appointmentDate).toLocaleDateString()} |{" "}
+          <strong>Time:</strong> {appt.appointmentTime}
+        </p>
+        {appt.patient && (
+          <p className="mt-1 text-sm text-gray-600">
+            <strong>Email:</strong> {appt.patient.emailId} |{" "}
+            <strong>Phone:</strong> {appt.patient.phone}
           </p>
-        ) : (
-          <table className="w-full text-sm text-left table-auto">
-            <thead className="text-gray-700 bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 border">Patient</th>
-                <th className="px-4 py-2 border">Date</th>
-                <th className="px-4 py-2 border">Time</th>
-                <th className="px-4 py-2 border">Status</th>
-                {title === "Pending Requests" && (
-                  <th className="px-4 py-2 text-center border">Actions</th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((appt) => (
-                <tr key={appt._id} className="transition hover:bg-gray-50">
-                  <td className="px-4 py-2 border">
-                    {appt?.name ||
-                      `${appt?.patient?.name || ""} ${
-                        appt?.patient?.lastName || ""
-                      }`}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {new Date(appt.appointmentDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-2 border">{appt.appointmentTime}</td>
-                  <td className="px-4 py-2 border">
-                    <span
-                      className={`inline-block px-3 py-1 text-xs font-bold rounded-full capitalize ${
-                        appt.status === "accepted"
-                          ? "bg-green-100 text-green-700"
-                          : appt.status === "rejected"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}
-                    >
-                      {appt.status}
-                    </span>
-                  </td>
-                  {title === "Pending Requests" && (
-                    <td className="px-4 py-2 space-x-2 text-center border">
-                      <button
-                        disabled={processingId === appt._id}
-                        onClick={() =>
-                          updateAppointmentStatus(appt._id, "accepted")
-                        }
-                        className="px-4 py-1 text-white bg-green-600 rounded hover:bg-green-700 disabled:opacity-60"
-                      >
-                        {processingId === appt._id ? "Accepting..." : "Accept"}
-                      </button>
-                      <button
-                        disabled={processingId === appt._id}
-                        onClick={() =>
-                          updateAppointmentStatus(appt._id, "rejected")
-                        }
-                        className="px-4 py-1 text-white bg-red-600 rounded hover:bg-red-700 disabled:opacity-60"
-                      >
-                        {processingId === appt._id ? "Rejecting..." : "Reject"}
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        )}
+        <p className="mt-1 text-sm text-gray-800">
+          <strong>Reason:</strong> {appt.reason || "N/A"}
+        </p>
+
+        {showActions && (
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => updateAppointmentStatus(appt._id, "accepted")}
+              disabled={processingId === appt._id}
+              className="px-4 py-1 text-white bg-green-600 rounded hover:bg-green-700 disabled:opacity-50"
+            >
+              {processingId === appt._id ? "Accepting..." : "Accept"}
+            </button>
+            <button
+              onClick={() => updateAppointmentStatus(appt._id, "rejected")}
+              disabled={processingId === appt._id}
+              className="px-4 py-1 text-white bg-red-600 rounded hover:bg-red-700 disabled:opacity-50"
+            >
+              {processingId === appt._id ? "Rejecting..." : "Reject"}
+            </button>
+          </div>
         )}
       </div>
+    );
+  };
+
+  const renderSection = (title, type) => (
+    <div className="mb-8">
+      <h2
+        className={`text-2xl font-bold mb-4 ${statusColors[type]
+          .split(" ")
+          .join(" ")}`}
+      >
+        {title} ({groupedAppointments[type].length})
+      </h2>
+      {groupedAppointments[type].length === 0 ? (
+        <p className="text-sm text-gray-500">No appointments found.</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {groupedAppointments[type].map((appt) => (
+            <AppointmentCard
+              key={appt._id}
+              appt={appt}
+              showActions={type === "pending"}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-40 text-lg text-gray-500">
-        Loading appointments...
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-6xl px-4 py-8 mx-auto">
-      <h2 className="mb-6 text-3xl font-bold text-gray-800">
-        Doctor Dashboard
-      </h2>
-      {renderTable("Pending Requests", pending, {
-        bg: "bg-yellow-100",
-        text: "text-yellow-800",
-      })}
-      {renderTable("Accepted Appointments", accepted, {
-        bg: "bg-green-100",
-        text: "text-green-800",
-      })}
-      {renderTable("Rejected Appointments", rejected, {
-        bg: "bg-red-100",
-        text: "text-red-800",
-      })}
+      <h1 className="mb-6 text-3xl font-bold text-gray-800">
+        Appointments Overview
+      </h1>
+      {loading ? (
+        <div className="py-20 text-lg text-center text-gray-500">
+          Loading appointments...
+        </div>
+      ) : (
+        <>
+          {renderSection("Pending Requests", "pending")}
+          {renderSection("Accepted Appointments", "accepted")}
+          {renderSection("Rejected Appointments", "rejected")}
+        </>
+      )}
     </div>
   );
 };

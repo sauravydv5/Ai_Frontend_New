@@ -6,6 +6,8 @@ import {
   FileText,
   Users,
   RefreshCcw,
+  Star,
+  Percent,
 } from "lucide-react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constant";
@@ -16,7 +18,7 @@ const DoctorHistory = () => {
 
   const fetchDoctorStats = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/doctor/activity-history`, {
+      const res = await axios.get(`${BASE_URL}/appointments/history`, {
         withCredentials: true,
       });
 
@@ -49,42 +51,71 @@ const DoctorHistory = () => {
     );
   }
 
+  // Calculate additional metrics
+  const completionRate =
+    history.totalAppointments > 0
+      ? (
+          (history.diagnosedAppointments / history.totalAppointments) *
+          100
+        ).toFixed(1)
+      : 0;
+
+  const averageRating =
+    history.feedbacks && history.feedbacks.length > 0
+      ? (
+          history.feedbacks.reduce((acc, fb) => acc + fb.rating, 0) /
+          history.feedbacks.length
+        ).toFixed(1)
+      : "N/A";
+
   const metrics = [
     {
       title: "Total Appointments",
-      value: history.totalAppointments,
+      value: history.totalAppointments || 0,
       icon: <BarChart2 className="w-6 h-6 text-blue-700" />,
       color: "bg-blue-50 text-blue-700",
     },
     {
       title: "Accepted Appointments",
-      value: history.acceptedAppointments,
+      value: history.acceptedAppointments || 0,
       icon: <UserCheck className="w-6 h-6 text-green-700" />,
       color: "bg-green-50 text-green-700",
     },
     {
       title: "Rejected Appointments",
-      value: history.rejectedAppointments,
+      value: history.rejectedAppointments || 0,
       icon: <UserX className="w-6 h-6 text-red-700" />,
       color: "bg-red-50 text-red-700",
     },
     {
       title: "Diagnosed Cases",
-      value: history.diagnosedAppointments,
+      value: history.diagnosedAppointments || 0,
       icon: <FileText className="w-6 h-6 text-yellow-600" />,
       color: "bg-yellow-50 text-yellow-600",
     },
     {
       title: "Unique Patients",
-      value: history.uniquePatientCount,
+      value: history.uniquePatientCount || 0,
       icon: <Users className="w-6 h-6 text-purple-600" />,
       color: "bg-purple-50 text-purple-600",
     },
     {
       title: "Profile Updates",
-      value: history.profileUpdates,
+      value: history.profileUpdates || 0,
       icon: <RefreshCcw className="w-6 h-6 text-gray-800" />,
       color: "bg-gray-100 text-gray-800",
+    },
+    {
+      title: "Completion Rate",
+      value: `${completionRate}%`,
+      icon: <Percent className="w-6 h-6 text-teal-700" />,
+      color: "bg-teal-50 text-teal-700",
+    },
+    {
+      title: "Avg. Rating",
+      value: averageRating === "N/A" ? "No Ratings" : `${averageRating} ★`,
+      icon: <Star className="w-6 h-6 text-orange-600" />,
+      color: "bg-orange-50 text-orange-600",
     },
   ];
 
@@ -94,20 +125,27 @@ const DoctorHistory = () => {
         Doctor Activity Overview
       </h1>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Metrics Cards */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {metrics.map((item, idx) => (
           <div
             key={idx}
-            className={`p-5 rounded-2xl shadow-lg transition-transform transform hover:scale-105 ${item.color}`}
+            className={`p-5 rounded-2xl shadow-md transition-transform transform hover:scale-105 ${item.color}`}
           >
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold">{item.title}</h2>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-base font-semibold">{item.title}</h2>
               {item.icon}
             </div>
             <p className="text-3xl font-bold">{item.value}</p>
           </div>
         ))}
       </div>
+
+      {/* Optional Future Graph Placeholder */}
+      {/* <div className="mt-10">
+        <h2 className="mb-4 text-xl font-semibold">Monthly Diagnosis Trend</h2>
+        <ChartComponent data={...} />
+      </div> */}
 
       {/* Feedback Section */}
       <div className="p-6 mt-12 bg-white shadow-xl rounded-2xl">
@@ -123,8 +161,7 @@ const DoctorHistory = () => {
               >
                 <div className="flex justify-between">
                   <span className="text-sm font-medium text-indigo-700">
-                    {fb.patient?.firstName || "Unknown"}{" "}
-                    {fb.patient?.lastName || ""}
+                    {fb.patient?.name || "Unknown"}
                   </span>
                   <span className="text-sm font-bold text-yellow-600">
                     ⭐ {fb.rating}/5

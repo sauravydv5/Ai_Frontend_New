@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils/constant";
 
 const Home1 = () => {
-  const [doctor, setDoctor] = useState({
-    firstName: "Doctor",
-    picture: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
-  });
-
-  const navigate = useNavigate();
-
+  const [doctor, setDoctor] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [tipIndex, setTipIndex] = useState(0);
 
@@ -25,40 +18,40 @@ const Home1 = () => {
     "Document everything—it protects both doctor and patient.",
   ];
 
+  // 👨‍⚕️ Fetch doctor info from backend
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("doctor");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        setDoctor({
-          firstName: parsed.firstName || "Doctor",
-          picture:
-            parsed.picture && parsed.picture !== "null"
-              ? parsed.picture
-              : "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
+    const fetchDoctor = async () => {
+      try {
+        const { data } = await axios.get(`${BASE_URL}/doctor/profile`, {
+          withCredentials: true,
         });
+        setDoctor(data.doctor);
+      } catch (err) {
+        console.error("Doctor info fetch failed", err);
       }
-    } catch {
-      console.warn("Doctor localStorage data invalid.");
-    }
+    };
+    fetchDoctor();
   }, []);
 
+  // 📅 Fetch appointments
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         const { data } = await axios.get(
-          BASE_URL + "/appointments/appointments-list",
-          { withCredentials: true }
+          `${BASE_URL}/appointments/appointments-list`,
+          {
+            withCredentials: true,
+          }
         );
         setAppointments(data.data || []);
       } catch (err) {
         console.error("Failed to fetch appointments:", err);
       }
     };
-
     fetchAppointments();
   }, []);
 
+  // 🔁 Smart Tip Rotator
   useEffect(() => {
     const interval = setInterval(() => {
       setTipIndex((prev) => (prev + 1) % smartTips.length);
@@ -66,14 +59,15 @@ const Home1 = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const today = new Date().toLocaleDateString();
+  const todayDateStr = new Date().toISOString().split("T")[0];
 
   const todaysAppointments = appointments.filter(
-    (a) => new Date(a.appointmentDate).toLocaleDateString() === today
+    (a) =>
+      a.status === "accepted" && a.appointmentDate?.startsWith(todayDateStr)
   );
 
   const pendingDiagnoses = appointments.filter(
-    (a) => !a.diagnosis || !a.prescription
+    (a) => a.status === "accepted" && (!a.diagnosis || !a.prescription)
   );
 
   return (
@@ -82,12 +76,16 @@ const Home1 = () => {
       <div className="flex flex-col justify-between mb-8 sm:flex-row sm:items-center">
         <div className="mb-4 sm:mb-0">
           <h1 className="text-xl font-semibold text-green-800 sm:text-2xl">
-            Welcome, Dr. {doctor.firstName} 👨‍⚕️
+            Welcome, Dr. {doctor?.firstName || "Doctor"} 👨‍⚕️
           </h1>
-          <p className="text-sm text-gray-500">Today is {today}</p>
+          <p className="text-sm text-gray-500">Today is {todayDateStr}</p>
         </div>
         <img
-          src={doctor.picture}
+          src={
+            doctor?.picture && doctor.picture !== "null"
+              ? doctor.picture
+              : "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
+          }
           alt="Doctor Avatar"
           className="object-cover w-12 h-12 rounded-full shadow sm:w-14 sm:h-14"
         />
@@ -132,10 +130,12 @@ const Home1 = () => {
       {/* Today's Appointments */}
       <div className="p-4 mb-10 bg-white border shadow sm:p-6 rounded-2xl">
         <h2 className="mb-4 font-semibold text-green-700 text-md sm:text-lg">
-          📋 Today's Appointments
+          📋 Today's Accepted Appointments
         </h2>
         {todaysAppointments.length === 0 ? (
-          <p className="text-sm text-gray-500">No appointments scheduled.</p>
+          <p className="text-sm text-gray-500">
+            No accepted appointments for today.
+          </p>
         ) : (
           <ul className="overflow-y-auto divide-y divide-gray-200 max-h-80">
             {todaysAppointments.map((a, i) => (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constant";
+import { ClipboardList, Stethoscope, FileText } from "lucide-react";
 
 const DoctorDiagnosisForm = () => {
   const [appointments, setAppointments] = useState([]);
@@ -15,7 +16,9 @@ const DoctorDiagnosisForm = () => {
     try {
       const res = await axios.get(
         BASE_URL + "/appointments/appointments-list",
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
 
       const pending = res.data.data.filter(
@@ -55,14 +58,15 @@ const DoctorDiagnosisForm = () => {
   };
 
   return (
-    <div className="max-w-xl p-6 mx-auto mt-8 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-2xl font-bold text-center text-blue-700">
-        Submit Diagnosis & Prescription
-      </h2>
+    <div className="max-w-3xl px-6 py-10 mx-auto mt-10 shadow-lg bg-gradient-to-br from-white via-blue-50 to-white rounded-xl">
+      <div className="flex items-center justify-center mb-6 text-blue-700">
+        <Stethoscope className="w-8 h-8 mr-2" />
+        <h2 className="text-3xl font-bold">Diagnosis & Prescription</h2>
+      </div>
 
       {message && (
         <p
-          className={`mb-4 text-center font-medium ${
+          className={`mb-6 text-center text-sm font-semibold ${
             message.includes("successfully") ? "text-green-600" : "text-red-600"
           }`}
         >
@@ -70,20 +74,23 @@ const DoctorDiagnosisForm = () => {
         </p>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block mb-1 font-medium">Select Appointment</label>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            <ClipboardList className="inline w-4 h-4 mr-1 text-blue-600" />
+            Select Appointment
+          </label>
           <select
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
             name="appointmentId"
             value={formData.appointmentId}
             onChange={handleChange}
             required
           >
-            <option value="">-- Select --</option>
+            <option value="">-- Select Appointment --</option>
             {appointments.map((appt) => (
               <option key={appt._id} value={appt._id}>
-                {appt.patient?.name || "Unnamed Patient"} —{" "}
+                {appt.name || appt.patient?.name || "Unnamed Patient"} —{" "}
                 {new Date(appt.appointmentDate).toLocaleDateString("en-IN", {
                   day: "2-digit",
                   month: "short",
@@ -95,37 +102,45 @@ const DoctorDiagnosisForm = () => {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Diagnosis</label>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            <FileText className="inline w-4 h-4 mr-1 text-blue-600" />
+            Diagnosis
+          </label>
           <textarea
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            rows={3}
+            className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            rows={4}
             name="diagnosis"
             value={formData.diagnosis}
             onChange={handleChange}
-            placeholder="Enter diagnosis..."
+            placeholder="Enter your diagnosis here..."
             required
           />
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Prescription</label>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            <FileText className="inline w-4 h-4 mr-1 text-blue-600" />
+            Prescription
+          </label>
           <textarea
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            rows={3}
+            className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            rows={4}
             name="prescription"
             value={formData.prescription}
             onChange={handleChange}
-            placeholder="Enter prescription..."
+            placeholder="Enter the prescription..."
             required
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full px-4 py-2 font-semibold text-white bg-blue-600 rounded hover:bg-blue-700"
-        >
-          Submit Diagnosis
-        </button>
+        <div className="pt-2">
+          <button
+            type="submit"
+            className="w-full px-5 py-2 font-semibold text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500"
+          >
+            Submit Diagnosis
+          </button>
+        </div>
       </form>
     </div>
   );
