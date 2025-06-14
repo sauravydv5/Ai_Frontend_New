@@ -30,31 +30,13 @@ const DoctorLogin = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(BASE_URL + "/doctor/login", formData, {
+      const res = await axios.post(`${BASE_URL}/doctor/login`, formData, {
         withCredentials: true,
       });
       setLoading(false);
 
       if (res.data.token && res.data.doctor) {
-        const currentDoctor = res.data.doctor;
-        localStorage.setItem("doctor", JSON.stringify(currentDoctor));
-
-        const existingList =
-          JSON.parse(localStorage.getItem("doctorList")) || [];
-
-        const alreadyExists = existingList.some(
-          (doc) => doc._id === currentDoctor._id
-        );
-
-        if (!alreadyExists) {
-          existingList.push({
-            _id: currentDoctor._id,
-            firstName: currentDoctor.firstName,
-            lastName: currentDoctor.lastName,
-          });
-          localStorage.setItem("doctorList", JSON.stringify(existingList));
-        }
-
+        localStorage.setItem("doctor", JSON.stringify(res.data.doctor));
         toast.success("Login successful!");
         navigate("/Doctor-dashboard");
       } else {

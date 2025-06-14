@@ -38,9 +38,10 @@ const EditPatientProfile = () => {
 
     const fetchProfile = async () => {
       try {
-        const { data } = await axios.get(BASE_URL + "/patient/profile", {
+        const { data } = await axios.get(BASE_URL + "/patient/profile/view", {
           withCredentials: true,
         });
+
         const profile = data.data;
         const allowedFields = Object.keys(formData);
         const filteredProfile = {};
