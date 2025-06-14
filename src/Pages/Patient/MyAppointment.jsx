@@ -14,7 +14,6 @@ const MyAppointments = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [feedbackVisible, setFeedbackVisible] = useState({});
 
   const fetchMyAppointments = async () => {
     try {
@@ -25,25 +24,27 @@ const MyAppointments = () => {
     } catch (err) {
       console.error("Error fetching appointments:", err);
       setError("Failed to load your appointments.");
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const fetchDoctors = async () => {
+    try {
+      const res = await axios.get(BASE_URL + "/doctor/list", {
+        withCredentials: true,
+      });
+      setDoctors(res.data.doctors || []);
+    } catch (err) {
+      console.error("Error fetching doctor list:", err);
     }
   };
 
   useEffect(() => {
-    const doctorList = JSON.parse(localStorage.getItem("doctors")) || [];
-    setDoctors(doctorList);
-    fetchMyAppointments();
+    Promise.all([fetchMyAppointments(), fetchDoctors()]).finally(() =>
+      setLoading(false)
+    );
   }, []);
 
-  const getDoctorFromLocal = (docRef) => {
-    const id = typeof docRef === "string" ? docRef : docRef?._id;
-    return doctors.find((doc) => doc._id === id) || {};
-  };
-
-  // const toggleFeedback = (id) => {
-  //   setFeedbackVisible((prev) => ({ ...prev, [id]: !prev[id] }));
-  // };
+  const getDoctorById = (id) => doctors.find((doc) => doc._id === id);
 
   if (loading)
     return (
@@ -67,16 +68,29 @@ const MyAppointments = () => {
       ) : (
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {appointments.map((appt) => {
-            const doctor = getDoctorFromLocal(appt.doctor);
+            const doctor = getDoctorById(
+              typeof appt.doctor === "string" ? appt.doctor : appt.doctor?._id
+            );
+
             return (
               <div
                 key={appt._id}
                 className="p-5 space-y-3 transition-shadow border shadow bg-gray-50 rounded-xl hover:shadow-lg"
               >
+                {doctor?.photoUrl && (
+                  <div className="flex justify-center">
+                    <img
+                      src={doctor.photoUrl}
+                      alt="Doctor"
+                      className="object-cover w-20 h-20 border border-gray-300 rounded-full shadow-sm"
+                    />
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between">
                   <h4 className="text-base font-semibold text-gray-800 md:text-lg">
                     <User className="inline w-4 h-4 mr-1 text-blue-600" />
-                    Dr. {doctor.firstName || "Not Found"}
+                    Dr. {doctor ? `${doctor.firstName}  ` : "Doctor not found"}
                   </h4>
                   <span
                     className={`text-xs font-medium px-3 py-1 rounded-full text-white ${
@@ -93,7 +107,7 @@ const MyAppointments = () => {
 
                 <p className="text-sm text-gray-600">
                   <Stethoscope className="inline w-4 h-4 mr-1 text-purple-600" />
-                  Speciality: {doctor.speciality || "Not Found"}
+                  Speciality: {doctor?.speciality || "N/A"}
                 </p>
 
                 <p className="text-sm text-gray-600">
@@ -110,26 +124,6 @@ const MyAppointments = () => {
                   <AlertCircle className="inline w-4 h-4 mr-1 text-red-600" />
                   Reason: {appt.reason}
                 </p>
-
-                {appt.status === "accepted" && (
-                  <>
-                    {/* <button
-                      onClick={() => toggleFeedback(appt._id)}
-                      className="px-4 py-1 mt-2 text-sm font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700"
-                    >
-                      {feedbackVisible[appt._id]
-                        ? "Cancel Feedback"
-                        : "Give Feedback"}
-                    </button> */}
-
-                    {feedbackVisible[appt._id] && (
-                      <FeedbackForm
-                        appointmentId={appt._id}
-                        onCancel={() => toggleFeedback(appt._id)}
-                      />
-                    )}
-                  </>
-                )}
               </div>
             );
           })}

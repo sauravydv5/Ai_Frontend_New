@@ -15,10 +15,11 @@ const EditPatientProfile = () => {
     medicalHistory: "",
     emergencyContact: "",
     allergies: "",
-    photoUrl: "", // ✅ Added for profile image
+    photoUrl: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
     const localPatient = localStorage.getItem("patientInfo");
@@ -83,8 +84,14 @@ const EditPatientProfile = () => {
       );
 
       toast.success(data.message || "Profile updated successfully");
+      setSuccessMsg(data.message || "Profile updated successfully");
+
       const updated = { ...formData, updatedAt: new Date().toISOString() };
       localStorage.setItem("patientInfo", JSON.stringify(updated));
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      setTimeout(() => setSuccessMsg(""), 4000);
     } catch (err) {
       toast.error(err.response?.data?.message || "Update failed");
     } finally {
@@ -97,6 +104,12 @@ const EditPatientProfile = () => {
       <h1 className="mb-6 text-3xl font-bold text-center text-teal-700">
         Edit Patient Profile
       </h1>
+
+      {successMsg && (
+        <div className="px-4 py-3 mb-6 font-medium text-center text-green-800 bg-green-100 border border-green-400 rounded-md">
+          ✅ {successMsg}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
         {/* Form */}

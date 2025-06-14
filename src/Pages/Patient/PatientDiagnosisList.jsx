@@ -58,7 +58,8 @@ const PatientDiagnosisList = () => {
               {appointments.map((appt) => (
                 <tr key={appt._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
-                    {appt.doctor.firstName} {appt.doctor.lastName}
+                    {appt.doctor.firstName}
+                    {/* {appt.doctor.lastName} */}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     {new Date(appt.appointmentDate).toLocaleDateString()}

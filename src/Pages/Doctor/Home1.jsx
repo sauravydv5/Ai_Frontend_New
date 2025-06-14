@@ -18,14 +18,15 @@ const Home1 = () => {
     "Document everything—it protects both doctor and patient.",
   ];
 
-  // 👨‍⚕️ Fetch doctor info from backend
+  // 👨‍⚕️ Fetch doctor info
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const { data } = await axios.get(`${BASE_URL}/doctor/profile`, {
+        const { data } = await axios.get(`${BASE_URL}/doctor/profile/view`, {
           withCredentials: true,
         });
-        setDoctor(data.doctor);
+        console.log("Doctor info:", data); // for debug
+        setDoctor(data.data); // ← Corrected: use data.data if backend sends { success: true, data: { doctorData } }
       } catch (err) {
         console.error("Doctor info fetch failed", err);
       }
@@ -51,7 +52,7 @@ const Home1 = () => {
     fetchAppointments();
   }, []);
 
-  // 🔁 Smart Tip Rotator
+  // 🔁 Rotate smart tips every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setTipIndex((prev) => (prev + 1) % smartTips.length);
@@ -72,7 +73,7 @@ const Home1 = () => {
 
   return (
     <div className="min-h-[90vh] bg-gray-50 p-4 sm:p-6">
-      {/* Welcome */}
+      {/* Welcome Section */}
       <div className="flex flex-col justify-between mb-8 sm:flex-row sm:items-center">
         <div className="mb-4 sm:mb-0">
           <h1 className="text-xl font-semibold text-green-800 sm:text-2xl">
@@ -82,8 +83,8 @@ const Home1 = () => {
         </div>
         <img
           src={
-            doctor?.picture && doctor.picture !== "null"
-              ? doctor.picture
+            doctor?.photoUrl && doctor.photoUrl !== "null"
+              ? doctor.photoUrl
               : "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
           }
           alt="Doctor Avatar"
@@ -91,7 +92,7 @@ const Home1 = () => {
         />
       </div>
 
-      {/* Stats */}
+      {/* Stats Section */}
       <div className="grid gap-4 mb-10 sm:grid-cols-2 lg:grid-cols-4">
         {[
           {
@@ -127,7 +128,7 @@ const Home1 = () => {
         ))}
       </div>
 
-      {/* Today's Appointments */}
+      {/* Today's Appointments Section */}
       <div className="p-4 mb-10 bg-white border shadow sm:p-6 rounded-2xl">
         <h2 className="mb-4 font-semibold text-green-700 text-md sm:text-lg">
           📋 Today's Accepted Appointments
@@ -157,7 +158,7 @@ const Home1 = () => {
         )}
       </div>
 
-      {/* Smart Tip */}
+      {/* Doctor's Corner - Smart Tip */}
       <div className="p-4 text-green-800 border border-green-200 shadow sm:p-5 bg-gradient-to-br from-green-100 to-sky-100 rounded-2xl">
         <h3 className="mb-1 font-semibold text-md">🧠 Doctor's Corner</h3>
         <p className="text-sm transition duration-300">{smartTips[tipIndex]}</p>

@@ -13,7 +13,11 @@ const DoctorList = () => {
     const fetchDoctors = async () => {
       try {
         const res = await axios.get(BASE_URL + "/doctor/list");
-        setDoctors(res.data.doctors || []);
+        // ✅ Filter only accepted doctors
+        const acceptedDoctors = (res.data.doctors || []).filter(
+          (doc) => doc.status === "Accepted"
+        );
+        setDoctors(acceptedDoctors);
       } catch (err) {
         setError("Failed to fetch doctors.");
         console.error(err);
@@ -45,14 +49,14 @@ const DoctorList = () => {
         <p className="text-lg text-center text-red-500">{error}</p>
       ) : doctors.length === 0 ? (
         <p className="text-lg text-center text-red-500">
-          No doctors available.
+          No accepted doctors available.
         </p>
       ) : (
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {doctors.map((doc) => (
             <div
               key={doc._id}
-              className="p-5 transition-transform transform bg-white border shadow-lg rounded-2xl hover:shadow-xl hover:scale-105"
+              className="flex flex-col justify-between p-6 bg-white border shadow-lg rounded-2xl hover:shadow-xl transition-transform transform hover:scale-[1.02]"
             >
               <div className="flex items-center gap-4 mb-4">
                 <img
@@ -62,13 +66,13 @@ const DoctorList = () => {
                       : "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
                   }
                   alt="Doctor"
-                  className="object-cover w-16 h-16 rounded-full shadow"
+                  className="object-cover w-16 h-16 rounded-full shadow-md"
                 />
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-800">
-                    Dr. {doc.firstName}
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-gray-800 sm:text-xl">
+                    Dr. {doc.firstName} {doc.lastName}
                   </h2>
-                  <span className="inline-block px-3 py-1 mt-1 text-xs font-medium text-white bg-green-600 rounded-full">
+                  <span className="inline-block px-2 py-1 mt-1 text-xs font-medium text-white bg-green-600 rounded-full">
                     {doc.speciality}
                   </span>
                 </div>
@@ -81,7 +85,7 @@ const DoctorList = () => {
                 <p>
                   <strong>📞 Phone:</strong> {doc.phone}
                 </p>
-                <p>
+                <p className="break-all">
                   <strong>📧 Email:</strong> {doc.emailId}
                 </p>
                 <p>
@@ -90,16 +94,16 @@ const DoctorList = () => {
                 </p>
               </div>
 
-              <div className="flex flex-col justify-between gap-3 mt-5 sm:flex-row">
+              <div className="flex flex-col gap-3 mt-5 sm:flex-row sm:justify-between">
                 <button
                   onClick={() => handleViewProfile(doc)}
-                  className="flex-1 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
+                  className="w-full px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 sm:w-auto"
                 >
                   View Profile
                 </button>
                 <button
                   onClick={() => handleBookAppointment(doc)}
-                  className="flex-1 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                  className="w-full px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 sm:w-auto"
                 >
                   Book Appointment
                 </button>

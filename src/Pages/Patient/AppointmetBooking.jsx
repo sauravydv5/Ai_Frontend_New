@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constant";
+import { useLocation } from "react-router-dom";
 
 const AppointmentBooking = () => {
+  const location = useLocation();
+  const selectedDoctorFromState = location.state?.doctor || null;
+
   const [formData, setFormData] = useState({
     name: "",
-    doctor: "",
+    doctor: selectedDoctorFromState?._id || "",
     appointmentDate: "",
     appointmentTime: "",
     reason: "",
@@ -95,16 +99,11 @@ const AppointmentBooking = () => {
           required
         >
           <option value="">Select Doctor</option>
-          {doctors.length > 0 ? (
-            doctors.map((doc) => (
-              <option key={doc._id} value={doc._id}>
-                {doc.firstName} {doc.lastName} ({doc.speciality || "Specialist"}
-                )
-              </option>
-            ))
-          ) : (
-            <option disabled>Loading doctors...</option>
-          )}
+          {doctors.map((doc) => (
+            <option key={doc._id} value={doc._id}>
+              {doc.firstName} {doc.lastName} ({doc.speciality || "Specialist"})
+            </option>
+          ))}
         </select>
 
         {/* Appointment Date */}
