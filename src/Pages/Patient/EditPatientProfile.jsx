@@ -22,21 +22,6 @@ const EditPatientProfile = () => {
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
-    const localPatient = localStorage.getItem("patientInfo");
-    if (localPatient) {
-      const profile = JSON.parse(localPatient);
-      const allowedFields = Object.keys(formData);
-      const filteredProfile = {};
-      allowedFields.forEach((key) => {
-        if (profile[key]) filteredProfile[key] = profile[key];
-      });
-
-      setFormData((prev) => ({
-        ...prev,
-        ...filteredProfile,
-      }));
-    }
-
     const fetchProfile = async () => {
       try {
         const { data } = await axios.get(BASE_URL + "/patient/profile/view", {
@@ -54,8 +39,6 @@ const EditPatientProfile = () => {
           ...prev,
           ...filteredProfile,
         }));
-
-        localStorage.setItem("patientInfo", JSON.stringify(filteredProfile));
       } catch (err) {
         toast.error("Failed to load profile");
       }
@@ -86,9 +69,6 @@ const EditPatientProfile = () => {
       toast.success(data.message || "Profile updated successfully");
       setSuccessMsg(data.message || "Profile updated successfully");
 
-      const updated = { ...formData, updatedAt: new Date().toISOString() };
-      localStorage.setItem("patientInfo", JSON.stringify(updated));
-
       window.scrollTo({ top: 0, behavior: "smooth" });
 
       setTimeout(() => setSuccessMsg(""), 4000);
@@ -112,7 +92,6 @@ const EditPatientProfile = () => {
       )}
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
           {[
             { name: "firstName", label: "Full Name" },
