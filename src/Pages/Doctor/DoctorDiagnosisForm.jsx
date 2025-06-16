@@ -149,6 +149,7 @@
 // export default DoctorDiagnosisForm;
 
 // NEW CODE
+
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constant";
@@ -163,12 +164,12 @@ const DoctorDiagnosisForm = () => {
   });
   const [message, setMessage] = useState("");
 
-  // ✅ Fetch accepted appointments with missing diagnosis or prescription
+  // Fetch appointments
   const fetchAppointments = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        BASE_URL + "/appointments/appointments-list",
+        `${BASE_URL}/appointments/appointments-list`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -179,7 +180,6 @@ const DoctorDiagnosisForm = () => {
       const pending = res.data.data.filter(
         (a) => a.status === "accepted" && (!a.diagnosis || !a.prescription)
       );
-
       setAppointments(pending);
     } catch (err) {
       console.error("Error fetching appointments:", err);
@@ -190,18 +190,18 @@ const DoctorDiagnosisForm = () => {
     fetchAppointments();
   }, [fetchAppointments]);
 
-  // ✅ Handle form changes
+  // Form change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ Submit diagnosis
+  // Form submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.post(BASE_URL + "/appointments/submitdiagnosis", formData, {
+      await axios.post(`${BASE_URL}/appointments/submitdiagnosis`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -223,7 +223,7 @@ const DoctorDiagnosisForm = () => {
         <h2 className="text-3xl font-bold">Diagnosis & Prescription</h2>
       </div>
 
-      {/* ✅ Feedback Message */}
+      {/* Feedback Message */}
       {message && (
         <p
           className={`mb-6 text-center text-sm font-semibold ${
@@ -234,36 +234,53 @@ const DoctorDiagnosisForm = () => {
         </p>
       )}
 
-      {/* ✅ Form */}
+      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Select Appointment */}
+        {/* Select Appointment Dropdown */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
             <ClipboardList className="inline w-4 h-4 mr-1 text-blue-600" />
             Select Appointment
           </label>
+
           <select
-            className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full px-4 py-3 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
             name="appointmentId"
             value={formData.appointmentId}
             onChange={handleChange}
             required
           >
             <option value="">-- Select Appointment --</option>
+
             {appointments.length > 0 ? (
-              appointments.map((appt) => (
-                <option key={appt._id} value={appt._id}>
-                  {appt?.patient?.firstName ||
-                    appt?.patient?.name ||
-                    "Unnamed Patient"}{" "}
-                  —{" "}
-                  {new Date(appt.appointmentDate).toLocaleDateString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </option>
-              ))
+              appointments.map((appt) => {
+                const patient = appt?.patient || {};
+                const fullName =
+                  patient.firstName && patient.lastName
+                    ? `${patient.firstName} ${patient.lastName}`
+                    : patient.name || "Unnamed Patient";
+
+                const formattedDate = new Date(
+                  appt.appointmentDate
+                ).toLocaleDateString("en-IN", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "short",
+                  day: "2-digit",
+                });
+
+                return (
+                  <option
+                    key={appt._id}
+                    value={appt._id}
+                    title={`Email: ${patient.email || "N/A"}\nPatient ID: ${
+                      patient._id
+                    }`}
+                  >
+                    {fullName} — {formattedDate}
+                  </option>
+                );
+              })
             ) : (
               <option disabled>No pending appointments</option>
             )}
