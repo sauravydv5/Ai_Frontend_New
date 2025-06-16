@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { BASE_URL } from "../../utils/constant";
 
 const healthTips = [
   "Drink at least 8 glasses of water daily 💧",
@@ -29,7 +30,7 @@ const Home = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:3000/patient/profile/view", {
+        const res = await fetch(BASE_URL + "/patient/profile/view", {
           credentials: "include",
         });
         const result = await res.json();
@@ -43,7 +44,7 @@ const Home = () => {
 
     const fetchStats = async () => {
       try {
-        const res = await fetch("http://localhost:3000/appointments/history", {
+        const res = await fetch(BASE_URL + "/appointments/history", {
           credentials: "include",
         });
         const data = await res.json();
