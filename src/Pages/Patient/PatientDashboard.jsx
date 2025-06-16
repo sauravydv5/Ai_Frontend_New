@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
+import axios from "axios";
 import PatientMenu from "../../Components/PatientSidebar";
+import { BASE_URL } from "../../utils/constant";
 
 const PatientDashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
-  const patientName = patientInfo?.name || "Patient";
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [patient, setPatient] = useState(null); // ✅ State for patient data
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -29,14 +29,32 @@ const PatientDashboard = () => {
     "Wellness begins from within 🌱",
     "Sleep is the best meditation 💤",
   ];
-
   const [quoteIndex, setQuoteIndex] = useState(0);
+
+  // ✅ Fetch patient data from backend
+  useEffect(() => {
+    const fetchPatient = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/patient/profile/view`, {
+          withCredentials: true, // To send cookies (JWT)
+        });
+        if (response.data.success) {
+          setPatient(response.data.data);
+        } else {
+          console.error("Patient data fetch failed");
+        }
+      } catch (err) {
+        console.error("Error fetching patient info", err);
+      }
+    };
+
+    fetchPatient();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % quotes.length);
-    }, 15000); // 15s interval
-
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -108,7 +126,6 @@ const PatientDashboard = () => {
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Header */}
         <header className="flex items-center justify-between h-16 px-4 shadow-sm bg-gradient-to-r from-white to-gray-100 md:px-6">
-          {/* Hamburger */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-2xl text-gray-600 md:hidden"
@@ -116,7 +133,6 @@ const PatientDashboard = () => {
             ☰
           </button>
 
-          {/* Date & Quote */}
           <div className="items-center hidden gap-4 ml-auto md:flex">
             <div className="flex-col hidden text-sm text-right md:flex">
               <span className="font-semibold text-gray-500">
@@ -132,15 +148,12 @@ const PatientDashboard = () => {
               </span>
             </div>
 
-            {/* Profile */}
+            {/* Profile Button */}
             <Link
               to="/patient-dashboard/profileview"
               className="px-4 py-1 text-sm font-medium text-gray-700 transition bg-white border rounded-full shadow hover:bg-gray-100"
             >
-              Hi,{" "}
-              {patientInfo?.firstName
-                ? patientInfo.firstName
-                : patientInfo?.name}
+              Hi, {patient?.firstName || "Patient"}
             </Link>
           </div>
         </header>

@@ -26,7 +26,7 @@ const ChatBot = () => {
 
     try {
       const res = await axios.post(
-        +BASE_URL + "/chatbot",
+        `${BASE_URL}/chatbot`, // ✅ fixed line
         { question },
         { withCredentials: true }
       );

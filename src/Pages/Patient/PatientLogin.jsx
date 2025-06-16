@@ -31,8 +31,8 @@ const PatientLogin = () => {
       });
 
       if (res.data.token && res.data.user) {
-        // ✅ Save token
-        localStorage.setItem("token", res.data.token);
+        // // ✅ Save token
+        // localStorage.setItem("token", res.data.token);
 
         // ✅ Save complete patient info
         localStorage.setItem("patientInfo", JSON.stringify(res.data.user));

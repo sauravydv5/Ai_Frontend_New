@@ -76,9 +76,9 @@ const Home = () => {
     <div className="w-full px-6 py-10 bg-gray-50 min-h-[90vh] animate-fadeIn">
       <div className="flex items-center gap-4 mb-4">
         <img
-          src={user.photoUrl}
+          src={user.photoUrl || "/default-avatar.png"}
           alt="User Avatar"
-          className="border-2 border-green-400 rounded-full w-14 h-14"
+          className="object-cover border-2 border-green-400 rounded-full w-14 h-14"
         />
         <div>
           <h1 className="text-2xl font-semibold text-green-700 animate-slideDown">

@@ -1,9 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import About from "../Components/About";
 
 const Homepage = () => {
+  const navigate = useNavigate();
+
+  const handleAppointmentClick = () => {
+    navigate("/patientlogin");
+  };
+
   return (
     <>
       <Navbar />
@@ -29,10 +36,13 @@ const Homepage = () => {
             Welcome to SwathyaAI
           </h1>
           <p className="max-w-2xl text-lg md:text-xl lg:text-2xl">
-            Your Presonal health companion powered by AI — track your mood, chat
+            Your Personal health companion powered by AI — track your mood, chat
             with our bot, and find peace.
           </p>
-          <button className="px-4 py-3 mt-8 text-sm text-white transition duration-300 ease-in-out border border-transparent rounded-full bg-blue-950 sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg hover:bg-blue-900">
+          <button
+            onClick={handleAppointmentClick}
+            className="px-4 py-3 mt-8 text-sm text-white transition duration-300 ease-in-out border border-transparent rounded-full bg-blue-950 sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg hover:bg-blue-900"
+          >
             Make an Appointment
           </button>
         </div>

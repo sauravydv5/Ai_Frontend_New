@@ -18,17 +18,17 @@ const Footer = () => {
                 {
                   label: "Facebook",
                   hover: "hover:text-teal-400",
-                  d: "M22 12c0-5.522-4.477...",
+                  d: "",
                 },
                 {
                   label: "Twitter",
                   hover: "hover:text-blue-400",
-                  d: "M23 3a10.9 10.9 0 01-3.14...",
+                  d: "",
                 },
                 {
                   label: "LinkedIn",
                   hover: "hover:text-indigo-400",
-                  d: "M4.98 3.5C3.34 3.5...",
+                  d: "",
                 },
               ].map((icon, i) => (
                 <a
@@ -95,7 +95,7 @@ const Footer = () => {
             <h3 className="mb-3 text-lg font-semibold text-white">Contact</h3>
             <p className="text-sm">123 AI Health St., Wellness City, IN</p>
             <p className="text-sm">support@aihealthcare.com</p>
-            <p className="text-sm">+91 12345 67890</p>
+            <p className="text-sm">+91 727744 3664</p>
           </div>
         </div>
 
