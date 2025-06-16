@@ -107,6 +107,10 @@ const DoctorProfile = () => {
     const fetchDoctorProfile = async () => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No token found. Please login again.");
+          return;
+        }
 
         const res = await axios.get(BASE_URL + "/doctor/profile/view", {
           headers: {
@@ -114,15 +118,18 @@ const DoctorProfile = () => {
           },
         });
 
-        if (!res.data.doctor) {
+        console.log("Doctor Profile Response:", res.data);
+
+        const doctorData = res.data?.doctor || res.data?.data?.doctor;
+        if (!doctorData) {
           setError("Doctor profile not found.");
           return;
         }
 
-        setDoctor(res.data.doctor);
+        setDoctor(doctorData);
       } catch (err) {
+        console.error("Error fetching doctor profile:", err);
         setError("Failed to load doctor profile.");
-        console.error(err);
       } finally {
         setLoading(false);
       }
