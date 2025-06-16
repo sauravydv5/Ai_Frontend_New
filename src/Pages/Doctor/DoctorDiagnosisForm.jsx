@@ -149,7 +149,6 @@
 // export default DoctorDiagnosisForm;
 
 // NEW CODE
-
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constant";
@@ -254,7 +253,10 @@ const DoctorDiagnosisForm = () => {
             {appointments.length > 0 ? (
               appointments.map((appt) => (
                 <option key={appt._id} value={appt._id}>
-                  {appt?.patient?.firstName || "Unnamed Patient"} —{" "}
+                  {appt?.patient?.firstName ||
+                    appt?.patient?.name ||
+                    "Unnamed Patient"}{" "}
+                  —{" "}
                   {new Date(appt.appointmentDate).toLocaleDateString("en-IN", {
                     day: "2-digit",
                     month: "short",
