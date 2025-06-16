@@ -114,7 +114,7 @@ const DoctorProfile = () => {
           },
         });
 
-        const doctorData = res.data;
+        const doctorData = res.data.data; // ✅ Corrected access to doctor data
 
         if (!doctorData || !doctorData.firstName) {
           setError("Doctor profile not found.");
@@ -180,7 +180,9 @@ const DoctorProfile = () => {
           <Info label="Available From" value={doctor.availableFrom} />
           <Info label="Available To" value={doctor.availableTo} />
           <Info label="Status" value={doctor.status} />
-          {doctor.comment && <Info label="Comment" value={doctor.comment} />}
+          {doctor.comment && (
+            <Info label="Admin Comment" value={doctor.comment} />
+          )}
         </div>
       </div>
     </div>
