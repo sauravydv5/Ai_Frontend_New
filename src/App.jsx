@@ -30,7 +30,6 @@ import EditPatientProfile from "./Pages/Patient/EditPatientProfile";
 import PatientProfileView from "./Pages/Patient/PatientProfileView";
 
 import DoctorProfileById from "./Pages/Doctor/DoctorProfileById";
-import About from "./Components/ABOUTT";
 
 const App = () => {
   return (
@@ -41,7 +40,6 @@ const App = () => {
         element={
           <GuestOnlyRoute>
             <Homepage />
-            <Route path="about" element={<About />} />
           </GuestOnlyRoute>
         }
       />
