@@ -107,29 +107,24 @@ const DoctorProfile = () => {
     const fetchDoctorProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
-          setError("No token found. Please login again.");
-          return;
-        }
 
-        const res = await axios.get(BASE_URL + "/doctor/profile/view", {
+        const res = await axios.get(`${BASE_URL}/doctor/profile/view`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        console.log("Doctor Profile Response:", res.data);
+        const doctorData = res.data;
 
-        const doctorData = res.data?.doctor || res.data?.data?.doctor;
-        if (!doctorData) {
+        if (!doctorData || !doctorData.firstName) {
           setError("Doctor profile not found.");
           return;
         }
 
         setDoctor(doctorData);
       } catch (err) {
-        console.error("Error fetching doctor profile:", err);
         setError("Failed to load doctor profile.");
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -158,7 +153,7 @@ const DoctorProfile = () => {
     <div className="min-h-screen px-4 py-10 bg-gradient-to-b from-blue-100 to-white">
       <div className="max-w-3xl p-8 mx-auto bg-white shadow-xl rounded-2xl">
         <div className="flex flex-col items-center mb-6 text-center">
-          {doctor.photoUrl ? (
+          {doctor.photoUrl && doctor.photoUrl.startsWith("http") ? (
             <img
               src={doctor.photoUrl}
               alt="Doctor"
