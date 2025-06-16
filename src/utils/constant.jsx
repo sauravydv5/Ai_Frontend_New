@@ -1,1 +1,1 @@
-export const BASE_URL = " https://ai-healthcare-backend-new.onrender.com";
+export const BASE_URL = "https://ai-healthcare-backend-new-1.onrender.com";
