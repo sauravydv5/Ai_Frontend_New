@@ -1,8 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-<div>
-  <Toaster />
-</div>;
 
 import Navbar from "./Components/Navbar";
 import Homepage from "./Pages/Homepage";
