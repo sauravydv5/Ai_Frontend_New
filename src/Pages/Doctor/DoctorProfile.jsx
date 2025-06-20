@@ -59,7 +59,7 @@ const DoctorProfile = () => {
     <div className="min-h-screen px-4 py-10 bg-gradient-to-b from-blue-100 to-white">
       <div className="max-w-3xl p-8 mx-auto bg-white shadow-xl rounded-2xl">
         <div className="flex flex-col items-center mb-6 text-center">
-          {doctor.photoUrl && doctor.photoUrl.startsWith("http") ? (
+          {doctor.photoUrl ? (
             <img
               src={doctor.photoUrl}
               alt="Doctor"

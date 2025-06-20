@@ -7,6 +7,7 @@ import { ClipboardList, Stethoscope, FileText } from "lucide-react";
 
 const DoctorDiagnosisForm = () => {
   const [appointments, setAppointments] = useState([]);
+  console.log(appointments);
   const [formData, setFormData] = useState({
     appointmentId: "",
     diagnosis: "",
@@ -108,7 +109,7 @@ const DoctorDiagnosisForm = () => {
                 const fullName =
                   patient.firstName && patient.lastName
                     ? `${patient.firstName} ${patient.lastName}`
-                    : patient.name || "Unnamed Patient";
+                    : appt.name;
 
                 const formattedDate = new Date(
                   appt.appointmentDate
