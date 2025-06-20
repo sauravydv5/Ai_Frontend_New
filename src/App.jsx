@@ -30,6 +30,7 @@ import EditPatientProfile from "./Pages/Patient/EditPatientProfile";
 import PatientProfileView from "./Pages/Patient/PatientProfileView";
 
 import DoctorProfileById from "./Pages/Doctor/DoctorProfileById";
+import SymptomChecker from "./Pages/Patient/SymptomChecker";
 
 const App = () => {
   return (
@@ -94,6 +95,7 @@ const App = () => {
         <Route path="profileview" element={<PatientProfileView />} />
         <Route path="book-appointment" element={<BookAppointment />} />
         <Route path="myappointemet" element={<MyAppointments />} />
+        <Route path="symptomcheak" element={<SymptomChecker />} />
         <Route
           path="patientdiagosisresult"
           element={<PatientDiagnosisList />}
@@ -132,4 +134,3 @@ const App = () => {
 };
 
 export default App;
-
