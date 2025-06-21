@@ -31,6 +31,7 @@ import PatientProfileView from "./Pages/Patient/PatientProfileView";
 
 import DoctorProfileById from "./Pages/Doctor/DoctorProfileById";
 import SymptomChecker from "./Pages/Patient/SymptomChecker";
+import AiMedco from "./Pages/Doctor/AiMedco";
 
 const App = () => {
   return (
@@ -117,6 +118,7 @@ const App = () => {
         <Route path="add-diagnosis" element={<DoctorDiagnosisForm />} />
         <Route path="history" element={<DoctorHistory />} />
         <Route path="profile" element={<ProfileView />} />
+        <Route path="aimedicine" element={<AiMedco />} />
         {/* ❌ Removed doctor-profile from here */}
       </Route>
 

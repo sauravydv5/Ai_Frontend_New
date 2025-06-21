@@ -6,6 +6,12 @@ const DoctorMenu = [
     path: "/doctor-dashboard/edit-profile",
   },
   {
+    name: "Drugs Verification",
+    icon: "💊",
+    path: "/doctor-dashboard/aimedicine",
+  },
+
+  {
     name: "View Appointments",
     icon: "📅",
     path: "/doctor-dashboard/appointments",
