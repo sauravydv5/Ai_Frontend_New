@@ -207,10 +207,15 @@ const DoctorDiagnosisForm = () => {
   });
   const [message, setMessage] = useState("");
 
-  // Fetch pending accepted appointments (without diagnosis or prescription)
+  // Fetch accepted appointments (no diagnosis or prescription)
   const fetchAppointments = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        console.warn("No token found in localStorage");
+        return;
+      }
+
       const res = await axios.get(
         `${BASE_URL}/appointments/appointments-list`,
         {
@@ -227,6 +232,7 @@ const DoctorDiagnosisForm = () => {
       setAppointments(pending);
     } catch (err) {
       console.error("Error fetching appointments:", err);
+      setMessage("❌ Failed to load appointments. Please log in again.");
     }
   }, []);
 
@@ -234,7 +240,7 @@ const DoctorDiagnosisForm = () => {
     fetchAppointments();
   }, [fetchAppointments]);
 
-  // Pre-fill prescription & diagnosis if passed from previous page
+  // Pre-fill prescription & diagnosis from location.state (if available)
   useEffect(() => {
     if (location.state) {
       setFormData((prev) => ({
@@ -245,18 +251,21 @@ const DoctorDiagnosisForm = () => {
     }
   }, [location.state]);
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Submit diagnosis form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        setMessage("❌ Token not found. Please log in.");
+        return;
+      }
+
       await axios.post(`${BASE_URL}/appointments/submitdiagnosis`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -341,7 +350,7 @@ const DoctorDiagnosisForm = () => {
           </select>
         </div>
 
-        {/* Diagnosis Field */}
+        {/* Diagnosis */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
             <FileText className="inline w-4 h-4 mr-1 text-blue-600" />
@@ -358,7 +367,7 @@ const DoctorDiagnosisForm = () => {
           />
         </div>
 
-        {/* Prescription Field */}
+        {/* Prescription */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
             <FileText className="inline w-4 h-4 mr-1 text-blue-600" />
