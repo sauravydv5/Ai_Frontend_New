@@ -101,6 +101,7 @@ import React, { useState } from "react";
 import symptomList from "../../Components/SymptomList";
 import axios from "axios";
 import ResultCard from "../../Components/ResultCard";
+import { BASE_URL } from "../../utils/constant";
 
 const SymptomChecker = () => {
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
@@ -118,12 +119,9 @@ const SymptomChecker = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(
-        "http://localhost:3000/api/symptom/predict-disease",
-        {
-          symptoms: selectedSymptoms,
-        }
-      );
+      const res = await axios.post(BASE_URL + "/api/symptom/predict-disease", {
+        symptoms: selectedSymptoms,
+      });
       setResults(res.data);
     } catch (err) {
       console.error("Error fetching prediction", err);
