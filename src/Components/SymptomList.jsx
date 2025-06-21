@@ -155,6 +155,7 @@ const symptomList = [
   "dizziness",
   "dry mouth",
   "ear pain",
+  "joint_pain",
   "eye redness",
   "facial pain",
   "fatigue",
