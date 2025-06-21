@@ -207,12 +207,16 @@ const DoctorDiagnosisForm = () => {
   });
   const [message, setMessage] = useState("");
 
+  // Fetch pending accepted appointments (without diagnosis or prescription)
   const fetchAppointments = useCallback(async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.get(
-        BASE_URL + "/appointments/appointments-list",
+        `${BASE_URL}/appointments/appointments-list`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -230,6 +234,7 @@ const DoctorDiagnosisForm = () => {
     fetchAppointments();
   }, [fetchAppointments]);
 
+  // Pre-fill prescription & diagnosis if passed from previous page
   useEffect(() => {
     if (location.state) {
       setFormData((prev) => ({
@@ -240,17 +245,22 @@ const DoctorDiagnosisForm = () => {
     }
   }, [location.state]);
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Submit diagnosis form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post(BASE_URL + "/appointments/submitdiagnosis", formData, {
-        withCredentials: true,
+      const token = localStorage.getItem("token");
+      await axios.post(`${BASE_URL}/appointments/submitdiagnosis`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       setMessage("✅ Diagnosis submitted successfully!");
@@ -263,7 +273,7 @@ const DoctorDiagnosisForm = () => {
   };
 
   return (
-    <div className="max-w-3xl px-6 py-10 mx-auto mt-10 shadow-lg bg-gradient-to-br from-white via-blue-50 to-white rounded-xl">
+    <div className="max-w-3xl px-6 py-10 mx-auto mt-10 shadow-xl bg-gradient-to-br from-white via-blue-50 to-white rounded-xl">
       <div className="flex items-center justify-center mb-6 text-blue-700">
         <Stethoscope className="w-8 h-8 mr-2" />
         <h2 className="text-3xl font-bold">Diagnosis & Prescription</h2>
@@ -280,32 +290,58 @@ const DoctorDiagnosisForm = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Appointment Dropdown */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
             <ClipboardList className="inline w-4 h-4 mr-1 text-blue-600" />
             Select Appointment
           </label>
+
           <select
-            className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full px-4 py-3 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
             name="appointmentId"
             value={formData.appointmentId}
             onChange={handleChange}
             required
           >
             <option value="">-- Select Appointment --</option>
-            {appointments.map((appt) => (
-              <option key={appt._id} value={appt._id}>
-                {appt.name || appt.patient?.name || "Unnamed Patient"} —{" "}
-                {new Date(appt.appointmentDate).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
+
+            {appointments.length > 0 ? (
+              appointments.map((appt) => {
+                const patient = appt?.patient || {};
+                const fullName =
+                  patient.firstName && patient.lastName
+                    ? `${patient.firstName} ${patient.lastName}`
+                    : appt.name || "Unnamed Patient";
+
+                const formattedDate = new Date(
+                  appt.appointmentDate
+                ).toLocaleDateString("en-IN", {
+                  weekday: "short",
                   year: "numeric",
-                })}
-              </option>
-            ))}
+                  month: "short",
+                  day: "2-digit",
+                });
+
+                return (
+                  <option
+                    key={appt._id}
+                    value={appt._id}
+                    title={`Email: ${patient.email || "N/A"}\nPatient ID: ${
+                      patient._id || "N/A"
+                    }`}
+                  >
+                    {fullName} — {formattedDate}
+                  </option>
+                );
+              })
+            ) : (
+              <option disabled>No pending appointments</option>
+            )}
           </select>
         </div>
 
+        {/* Diagnosis Field */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
             <FileText className="inline w-4 h-4 mr-1 text-blue-600" />
@@ -322,6 +358,7 @@ const DoctorDiagnosisForm = () => {
           />
         </div>
 
+        {/* Prescription Field */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
             <FileText className="inline w-4 h-4 mr-1 text-blue-600" />
@@ -338,6 +375,7 @@ const DoctorDiagnosisForm = () => {
           />
         </div>
 
+        {/* Submit Button */}
         <div className="pt-2">
           <button
             type="submit"
