@@ -187,6 +187,7 @@ export default function AiMedco() {
         </button>
       </form>
 
+      {/* Show result after API response */}
       {result && (
         <div
           className={`mt-6 p-4 border rounded ${
@@ -199,7 +200,7 @@ export default function AiMedco() {
           </p>
           <p>
             <strong>Expected Medicines:</strong>{" "}
-            {result.expected_medicines.join(", ")}
+            {result.expected_medicines?.join(", ") || "N/A"}
           </p>
           <p>
             <strong>Status:</strong>{" "}
@@ -210,22 +211,25 @@ export default function AiMedco() {
         </div>
       )}
 
-      {result?.valid_prescription && (
-        <button
-          onClick={() =>
-            navigate("/doctor-dashboard/add-diagnosis", {
-              state: {
-                prescription: result.expected_medicines.join(", "),
-                diagnosis: result.predicted_disease,
-              },
-            })
-          }
-          className="px-4 py-2 mt-4 text-white bg-green-600 rounded hover:bg-green-700"
-        >
-          Use This Prescription
-        </button>
-      )}
+      {/* Show "Use This Prescription" button if expected_medicines exist */}
+      {Array.isArray(result?.expected_medicines) &&
+        result.expected_medicines.length > 0 && (
+          <button
+            onClick={() =>
+              navigate("/doctor-dashboard/add-diagnosis", {
+                state: {
+                  prescription: result.expected_medicines.join(", "),
+                  diagnosis: result.predicted_disease,
+                },
+              })
+            }
+            className="px-4 py-2 mt-4 text-white bg-green-600 rounded hover:bg-green-700"
+          >
+            Use This Prescription
+          </button>
+        )}
 
+      {/* Show error message if needed */}
       {error && (
         <div className="p-3 mt-4 text-red-800 bg-red-100 rounded">{error}</div>
       )}
