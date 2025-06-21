@@ -119,9 +119,13 @@ const SymptomChecker = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(BASE_URL + "/api/symptom/predict-disease", {
-        symptoms: selectedSymptoms,
-      });
+      // const res = await axios.post(BASE_URL + "/api/symptom/predict-disease", {
+      const res = await axios.post(
+        "https://ai-medical-recommendation.onrender.com/predict",
+        {
+          symptoms: selectedSymptoms,
+        }
+      );
       setResults(res.data);
     } catch (err) {
       console.error("Error fetching prediction", err);
