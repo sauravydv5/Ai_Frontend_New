@@ -32,6 +32,7 @@ import PatientProfileView from "./Pages/Patient/PatientProfileView";
 import DoctorProfileById from "./Pages/Doctor/DoctorProfileById";
 import SymptomChecker from "./Pages/Patient/SymptomChecker";
 import AiMedco from "./Pages/Doctor/AiMedco";
+import MoodAnalyzer from "./Pages/Patient/MoodAnalyzer";
 
 const App = () => {
   return (
@@ -97,6 +98,7 @@ const App = () => {
         <Route path="book-appointment" element={<BookAppointment />} />
         <Route path="myappointemet" element={<MyAppointments />} />
         <Route path="symptomcheak" element={<SymptomChecker />} />
+        <Route path="cheakyourmood" element={<MoodAnalyzer />} />
         <Route
           path="patientdiagosisresult"
           element={<PatientDiagnosisList />}

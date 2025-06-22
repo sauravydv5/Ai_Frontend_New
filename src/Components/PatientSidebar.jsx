@@ -8,6 +8,11 @@ const PatientMenu = [
   },
 
   { name: "AI Chatbot", icon: "🤖", path: "/patient-dashboard/chatbot" },
+  // {
+  //   name: "Mood Cheaker",
+  //   icon: "🤖",
+  //   path: "/patient-dashboard/cheakyourmood",
+  // },
   { name: "Doctor List", icon: "👨‍⚕️", path: "/patient-dashboard/doctor-list" },
   {
     name: "Book Appointment",

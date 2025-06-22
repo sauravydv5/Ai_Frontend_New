@@ -1,8 +1,6 @@
-// NNNEEWWW
-
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
-import axiosInstance from "../../utils/axiosInstance"; // ✅ Secure instance
+import axiosInstance from "../../utils/axiosInstance";
 import PatientMenu from "../../Components/PatientSidebar";
 
 const PatientDashboard = () => {
@@ -56,11 +54,12 @@ const PatientDashboard = () => {
     <div className="flex h-screen font-sans bg-gray-100">
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 h-full w-64 transform bg-gradient-to-b from-green-700 to-teal-900 text-white shadow-lg transition-transform duration-300 md:relative md:translate-x-0 ${
+        className={`fixed top-0 left-0 z-40 w-64 transform bg-gradient-to-b from-green-700 to-teal-900 text-white shadow-lg transition-transform duration-300 md:relative md:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
+        style={{ height: "100vh" }}
       >
-        <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col h-full overflow-y-auto">
           {/* Logo */}
           <div className="py-6 text-center border-b border-teal-600">
             <h1 className="text-3xl font-extrabold tracking-wide text-transparent bg-gradient-to-r from-green-400 via-teal-300 to-blue-500 bg-clip-text drop-shadow-md">
@@ -72,7 +71,7 @@ const PatientDashboard = () => {
           </div>
 
           {/* Menu */}
-          <nav className="px-4 py-6 space-y-2">
+          <div className="flex flex-col flex-grow px-4 py-6 space-y-2">
             {PatientMenu.map((menu, index) => {
               const isActive = location.pathname === menu.path;
               return (
@@ -99,7 +98,7 @@ const PatientDashboard = () => {
             >
               <span className="mr-3 text-lg">🚪</span> Logout
             </div>
-          </nav>
+          </div>
 
           {/* Footer */}
           <div className="p-4 text-sm text-center border-t border-teal-600">
