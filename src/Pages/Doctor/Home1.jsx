@@ -1,5 +1,3 @@
-//NEW CODE
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constant";
@@ -20,7 +18,6 @@ const Home1 = () => {
     "Document everything—it protects both doctor and patient.",
   ];
 
-  // 👨‍⚕️ Fetch doctor info
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
@@ -38,7 +35,6 @@ const Home1 = () => {
     fetchDoctor();
   }, []);
 
-  // 📅 Fetch appointments
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -59,7 +55,6 @@ const Home1 = () => {
     fetchAppointments();
   }, []);
 
-  // 🔁 Rotate smart tips every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setTipIndex((prev) => (prev + 1) % smartTips.length);
@@ -79,65 +74,67 @@ const Home1 = () => {
   );
 
   return (
-    <div className="min-h-[90vh] bg-gray-50 p-4 sm:p-6">
-      {/* Welcome Section */}
+    <div className="min-h-[90vh] bg-gradient-to-br from-blue-50 to-white p-4 sm:p-6">
+      {/* Welcome */}
       <div className="flex flex-col justify-between mb-8 sm:flex-row sm:items-center">
-        <div className="mb-4 sm:mb-0">
-          <h1 className="text-xl font-semibold text-green-800 sm:text-2xl">
+        <div>
+          <h1 className="text-2xl font-bold text-green-800">
             Welcome, Dr. {doctor?.firstName || "Doctor"} 👨‍⚕️
           </h1>
-          <p className="text-sm text-gray-500">Today is {todayDateStr}</p>
+          <p className="text-sm text-gray-600">Today is {todayDateStr}</p>
         </div>
-        <img
-          src={
-            doctor?.photoUrl && doctor.photoUrl !== "null"
-              ? doctor.photoUrl
-              : "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
-          }
-          alt="Doctor Avatar"
-          className="object-cover w-12 h-12 rounded-full shadow sm:w-14 sm:h-14"
-        />
+        <div className="relative">
+          <img
+            src={
+              doctor?.photoUrl && doctor.photoUrl !== "null"
+                ? doctor.photoUrl
+                : "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
+            }
+            alt="Doctor Avatar"
+            className="object-cover transition duration-300 rounded-full shadow-xl w-14 h-14 ring-4 ring-blue-300 hover:scale-105"
+          />
+        </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="grid gap-4 mb-10 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Stats */}
+      <div className="grid gap-6 mb-10 sm:grid-cols-2 lg:grid-cols-4">
         {[
           {
             label: "Total Appointments",
             value: appointments.length,
-            color: "from-green-200 to-green-100",
+            color: "from-green-300 to-green-100",
           },
           {
             label: "Today's Appointments",
             value: todaysAppointments.length,
-            color: "from-sky-200 to-sky-100",
+            color: "from-blue-300 to-sky-100",
           },
           {
             label: "Pending Diagnoses",
             value: pendingDiagnoses.length,
-            color: "from-pink-200 to-rose-100",
+            color: "from-rose-300 to-pink-100",
           },
           {
             label: "Patient Rating",
             value: "4.7 ★",
-            color: "from-yellow-100 to-orange-100",
+            color: "from-yellow-200 to-orange-100",
           },
-        ].map((card, i) => (
+        ].map((item, i) => (
           <div
             key={i}
-            className={`p-4 sm:p-5 rounded-2xl shadow bg-gradient-to-br ${card.color}`}
+            className={`transform hover:scale-105 transition-all duration-300 p-5 rounded-2xl shadow-xl bg-gradient-to-br ${item.color}`}
           >
-            <h4 className="text-sm text-gray-700 sm:text-base">{card.label}</h4>
-            <p className="mt-1 text-2xl font-bold text-gray-900 sm:text-3xl">
-              {card.value}
+            <h4 className="text-sm font-medium text-gray-700">{item.label}</h4>
+            <p className="mt-2 text-3xl font-bold text-gray-900">
+              {item.value}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Today's Appointments Section */}
-      <div className="p-4 mb-10 bg-white border shadow sm:p-6 rounded-2xl">
-        <h2 className="mb-4 font-semibold text-green-700 text-md sm:text-lg">
+      {/* Today's Appointments */}
+      <div className="p-6 mb-10 bg-white border shadow-xl rounded-2xl">
+        <h2 className="mb-4 text-lg font-bold text-green-700">
           📋 Today's Accepted Appointments
         </h2>
         {todaysAppointments.length === 0 ? (
@@ -145,14 +142,14 @@ const Home1 = () => {
             No accepted appointments for today.
           </p>
         ) : (
-          <ul className="overflow-y-auto divide-y divide-gray-200 max-h-80">
+          <ul className="overflow-y-auto divide-y divide-gray-200 max-h-80 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50">
             {todaysAppointments.map((a, i) => (
               <li
                 key={i}
-                className="flex flex-col justify-between gap-2 py-3 sm:flex-row sm:items-center"
+                className="flex items-center justify-between py-3 sm:py-4"
               >
                 <div>
-                  <p className="font-medium text-gray-800">
+                  <p className="font-semibold text-gray-800">
                     {a.patient?.firstName || "Patient"}
                   </p>
                   <p className="text-sm text-gray-500">
@@ -165,10 +162,15 @@ const Home1 = () => {
         )}
       </div>
 
-      {/* Doctor's Corner - Smart Tip */}
-      <div className="p-4 text-green-800 border border-green-200 shadow sm:p-5 bg-gradient-to-br from-green-100 to-sky-100 rounded-2xl">
-        <h3 className="mb-1 font-semibold text-md">🧠 Doctor's Corner</h3>
-        <p className="text-sm transition duration-300">{smartTips[tipIndex]}</p>
+      {/* Smart Tip */}
+      <div className="relative p-6 text-green-900 border border-green-200 shadow-inner bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl">
+        <h3 className="mb-2 font-bold text-md">🧠 Doctor’s Corner</h3>
+        <blockquote className="text-sm italic transition-opacity duration-500">
+          “{smartTips[tipIndex]}”
+        </blockquote>
+        <div className="absolute text-xs text-gray-400 bottom-3 right-5">
+          Auto rotates every 10s
+        </div>
       </div>
     </div>
   );

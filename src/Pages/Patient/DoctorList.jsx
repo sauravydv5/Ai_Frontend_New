@@ -13,13 +13,12 @@ const DoctorList = () => {
     const fetchDoctors = async () => {
       try {
         const res = await axios.get(BASE_URL + "/doctor/list");
-        // ✅ Filter only accepted doctors
         const acceptedDoctors = (res.data.doctors || []).filter(
           (doc) => doc.status === "Accepted"
         );
         setDoctors(acceptedDoctors);
       } catch (err) {
-        setError("Failed to fetch doctors.");
+        setError("❌ Failed to fetch doctors. Please try again later.");
         console.error(err);
       } finally {
         setLoading(false);
@@ -38,26 +37,36 @@ const DoctorList = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 py-10 bg-gradient-to-br from-blue-50 to-white">
-      <h1 className="mb-8 text-3xl font-extrabold text-center text-indigo-800 md:text-4xl">
-        Our Trusted Doctors
+    <div className="min-h-screen px-4 py-10 bg-gradient-to-br from-blue-50 via-white to-blue-100">
+      {/* Heading */}
+      <h1 className="mb-8 text-4xl font-bold text-center text-indigo-800 underline decoration-indigo-400 decoration-2 underline-offset-8">
+        🩺 Our Trusted Doctors
       </h1>
 
+      {/* Loader */}
       {loading ? (
-        <p className="text-lg text-center text-gray-500">Loading doctors...</p>
+        <div className="flex justify-center mt-20">
+          <div className="flex items-center gap-2 text-lg font-medium text-blue-600 animate-pulse">
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+            <span>Loading doctors...</span>
+          </div>
+        </div>
       ) : error ? (
-        <p className="text-lg text-center text-red-500">{error}</p>
+        <p className="text-lg font-semibold text-center text-red-600">
+          {error}
+        </p>
       ) : doctors.length === 0 ? (
-        <p className="text-lg text-center text-red-500">
-          No accepted doctors available.
+        <p className="text-lg text-center text-gray-600">
+          No accepted doctors available at the moment.
         </p>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 animate-fadeIn">
           {doctors.map((doc) => (
             <div
               key={doc._id}
-              className="flex flex-col justify-between p-6 bg-white border shadow-lg rounded-2xl hover:shadow-xl transition-transform transform hover:scale-[1.02]"
+              className="flex flex-col justify-between p-6 bg-white border shadow-md rounded-2xl hover:shadow-xl transition-transform transform hover:scale-[1.02]"
             >
+              {/* Doctor Info */}
               <div className="flex items-center gap-4 mb-4">
                 <img
                   src={
@@ -72,12 +81,13 @@ const DoctorList = () => {
                   <h2 className="text-lg font-bold text-gray-800 sm:text-xl">
                     Dr. {doc.firstName} {doc.lastName}
                   </h2>
-                  <span className="inline-block px-2 py-1 mt-1 text-xs font-medium text-white bg-green-600 rounded-full">
+                  <span className="inline-block px-2 py-1 mt-1 text-xs font-medium text-white bg-green-600 rounded-full shadow-sm">
                     {doc.speciality}
                   </span>
                 </div>
               </div>
 
+              {/* Details */}
               <div className="space-y-1 text-sm text-gray-700">
                 <p>
                   <strong>📍 Clinic:</strong> {doc.clinicAddress}
@@ -85,7 +95,7 @@ const DoctorList = () => {
                 <p>
                   <strong>📞 Phone:</strong> {doc.phone}
                 </p>
-                <p className="break-all">
+                <p className="break-words">
                   <strong>📧 Email:</strong> {doc.emailId}
                 </p>
                 <p>
@@ -94,6 +104,7 @@ const DoctorList = () => {
                 </p>
               </div>
 
+              {/* Buttons */}
               <div className="flex flex-col gap-3 mt-5 sm:flex-row sm:justify-between">
                 <button
                   onClick={() => handleViewProfile(doc)}

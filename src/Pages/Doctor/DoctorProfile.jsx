@@ -1,7 +1,6 @@
-// NEW CODE
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Loader2 } from "lucide-react"; // spinner
 import { BASE_URL } from "../../utils/constant";
 
 const DoctorProfile = () => {
@@ -13,15 +12,11 @@ const DoctorProfile = () => {
     const fetchDoctorProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-
         const res = await axios.get(`${BASE_URL}/doctor/profile/view`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        const doctorData = res.data.data; // ✅ Corrected access to doctor data
-
+        const doctorData = res.data.data;
         if (!doctorData || !doctorData.firstName) {
           setError("Doctor profile not found.");
           return;
@@ -41,8 +36,13 @@ const DoctorProfile = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-lg text-gray-500">
-        Loading doctor profile...
+      <div className="flex items-center justify-center min-h-screen bg-blue-50">
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+          <p className="text-sm font-medium text-blue-700">
+            Loading Doctor Profile...
+          </p>
+        </div>
       </div>
     );
   }
@@ -56,21 +56,22 @@ const DoctorProfile = () => {
   }
 
   return (
-    <div className="min-h-screen px-4 py-10 bg-gradient-to-b from-blue-100 to-white">
-      <div className="max-w-3xl p-8 mx-auto bg-white shadow-xl rounded-2xl">
-        <div className="flex flex-col items-center mb-6 text-center">
+    <div className="min-h-screen px-4 py-10 bg-gradient-to-br from-blue-100 via-white to-blue-50">
+      <div className="relative max-w-4xl p-8 mx-auto transition-all duration-500 ease-in-out border border-blue-200 shadow-2xl bg-white/60 backdrop-blur-xl rounded-3xl hover:shadow-blue-300">
+        {/* Top Avatar Section */}
+        <div className="flex flex-col items-center mb-8 text-center">
           {doctor.photoUrl ? (
             <img
               src={doctor.photoUrl}
               alt="Doctor"
-              className="object-cover w-32 h-32 mb-4 border-4 border-blue-400 rounded-full shadow-md"
+              className="object-cover w-32 h-32 mb-4 transition border-4 border-blue-400 rounded-full shadow-lg hover:scale-105"
             />
           ) : (
             <div className="flex items-center justify-center w-32 h-32 mb-4 text-xl font-bold text-white bg-gray-400 rounded-full">
               No Photo
             </div>
           )}
-          <h2 className="mb-1 text-3xl font-bold text-blue-800">
+          <h2 className="text-3xl font-extrabold text-blue-800 drop-shadow">
             Dr. {doctor.firstName}
           </h2>
           <p className="text-lg italic text-gray-600">
@@ -78,7 +79,8 @@ const DoctorProfile = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 mt-6 text-gray-700 sm:grid-cols-2">
+        {/* Info Grid */}
+        <div className="grid grid-cols-1 gap-6 text-gray-800 sm:grid-cols-2">
           <Info label="Email" value={doctor.emailId} />
           <Info label="Phone" value={doctor.phone} />
           <Info label="Experience" value={`${doctor.experienceYears} years`} />
@@ -96,9 +98,9 @@ const DoctorProfile = () => {
 };
 
 const Info = ({ label, value }) => (
-  <div>
-    <p className="font-semibold">{label}:</p>
-    <p>{value || "N/A"}</p>
+  <div className="p-4 transition duration-300 border border-gray-100 shadow-md bg-white/80 rounded-xl hover:shadow-lg">
+    <p className="text-sm font-semibold text-blue-700">{label}</p>
+    <p className="text-base font-medium text-gray-900">{value || "N/A"}</p>
   </div>
 );
 

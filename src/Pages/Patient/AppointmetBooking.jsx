@@ -1,5 +1,3 @@
-// NEWWW
-
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
@@ -19,6 +17,9 @@ const AppointmentBooking = () => {
   const [doctors, setDoctors] = useState([]);
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [minTime, setMinTime] = useState("00:00");
+
+  const getTodayDate = () => new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -34,6 +35,18 @@ const AppointmentBooking = () => {
     };
     fetchDoctors();
   }, []);
+
+  useEffect(() => {
+    // If user selects today's date, set minimum time to current time
+    if (formData.appointmentDate === getTodayDate()) {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      setMinTime(`${hours}:${minutes}`);
+    } else {
+      setMinTime("00:00");
+    }
+  }, [formData.appointmentDate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,13 +80,19 @@ const AppointmentBooking = () => {
   };
 
   return (
-    <div className="max-w-xl p-6 mx-auto mt-10 bg-white shadow-lg rounded-2xl">
+    <div className="relative max-w-xl p-6 mx-auto mt-10 bg-white shadow-lg rounded-2xl">
+      {/* Loader Overlay */}
+      {loading && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-white/60 rounded-2xl">
+          <div className="w-12 h-12 border-[5px] border-teal-600 border-dashed rounded-full animate-spin border-t-transparent"></div>
+        </div>
+      )}
+
       <h2 className="mb-6 text-2xl font-bold text-center text-gray-800">
         Book an Appointment 🩺
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name */}
         <input
           type="text"
           name="name"
@@ -84,7 +103,6 @@ const AppointmentBooking = () => {
           required
         />
 
-        {/* Doctor Dropdown */}
         <select
           name="doctor"
           value={formData.doctor}
@@ -100,27 +118,26 @@ const AppointmentBooking = () => {
           ))}
         </select>
 
-        {/* Date */}
         <input
           type="date"
           name="appointmentDate"
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
           value={formData.appointmentDate}
           onChange={handleChange}
+          min={getTodayDate()} // ✅ Restrict past dates
           required
         />
 
-        {/* Time */}
         <input
           type="time"
           name="appointmentTime"
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
           value={formData.appointmentTime}
           onChange={handleChange}
+          min={minTime} // ✅ Restrict past time if today
           required
         />
 
-        {/* Reason */}
         <textarea
           name="reason"
           rows="3"
@@ -131,20 +148,22 @@ const AppointmentBooking = () => {
           required
         ></textarea>
 
-        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full px-4 py-3 font-semibold text-white transition duration-200 bg-teal-600 rounded-lg hover:bg-teal-700"
+          className={`w-full px-4 py-3 font-semibold text-white rounded-lg transition duration-200 ${
+            loading
+              ? "bg-teal-400 cursor-not-allowed"
+              : "bg-teal-600 hover:bg-teal-700"
+          }`}
         >
           {loading ? "Booking..." : "Book Appointment"}
         </button>
       </form>
 
-      {/* Response Message */}
       {response && (
         <div
-          className={`mt-4 p-4 rounded-lg text-sm ${
+          className={`mt-4 p-4 rounded-lg text-sm transition-all ${
             response.success
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"

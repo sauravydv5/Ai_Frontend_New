@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { BASE_URL } from "../../utils/constant";
+import "react-toastify/dist/ReactToastify.css";
 
 const PatientLogin = () => {
   const navigate = useNavigate();
@@ -10,6 +12,7 @@ const PatientLogin = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,23 +28,39 @@ const PatientLogin = () => {
     }
 
     try {
+      setLoading(true);
+      setError("");
+
       const res = await axios.post(BASE_URL + "/patient/login", formData);
+
       if (res.data.token && res.data.user) {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("patientInfo", JSON.stringify(res.data.user));
-        alert("Login successful!");
+        toast.success("Login successful!");
         navigate("/Patient-dashboard");
       } else {
         setError(res.data.message || "Login failed");
+        toast.error(res.data.message || "Login failed");
       }
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong.");
+      toast.error(err.response?.data?.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-teal-100 via-white to-teal-200">
-      <div className="w-full max-w-md p-8 bg-white border border-teal-100 shadow-2xl rounded-2xl">
+    <div className="relative flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-teal-100 via-white to-teal-200">
+      {/* ⏳ Loader Overlay */}
+      {loading && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center backdrop-blur-sm bg-white/40">
+          <div className="border-4 border-teal-600 border-dashed rounded-full w-14 h-14 border-t-transparent animate-spin"></div>
+        </div>
+      )}
+
+      {/* Login Card (No blur now) */}
+      <div className="w-full max-w-md p-8 transition-all duration-300 bg-white shadow-2xl rounded-2xl">
         <h2 className="mb-6 text-3xl font-bold text-center text-teal-700">
           Patient Login
         </h2>
@@ -83,9 +102,14 @@ const PatientLogin = () => {
 
           <button
             type="submit"
-            className="w-full py-2 font-semibold text-white transition duration-300 bg-teal-600 rounded-lg hover:bg-teal-700"
+            disabled={loading}
+            className={`w-full py-2 font-semibold text-white rounded-lg transition duration-300 ${
+              loading
+                ? "bg-teal-400 cursor-not-allowed"
+                : "bg-teal-600 hover:bg-teal-700"
+            }`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
