@@ -8,8 +8,8 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Blog" },
+    { name: "About", path: "/aboutpage" },
+    { name: "Blog", path: "/blogpage" },
   ];
 
   const isActive = (path) => location.pathname === path;

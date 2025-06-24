@@ -36,6 +36,8 @@ import MoodAnalyzer from "./Pages/Patient/MoodAnalyzer";
 // Auth Utils
 import AuthRoute from "./utils/AuthRoute";
 import GuestOnlyRoute from "./utils/GuestOnlyRoute";
+import AboutPage from "./Components/AboutPage";
+import BlogPage from "./Components/BlogPage";
 
 const App = () => {
   return (
@@ -60,6 +62,22 @@ const App = () => {
           element={
             <GuestOnlyRoute>
               <Homepage />
+            </GuestOnlyRoute>
+          }
+        />
+        <Route
+          path="/aboutpage"
+          element={
+            <GuestOnlyRoute>
+              <AboutPage />
+            </GuestOnlyRoute>
+          }
+        />
+        <Route
+          path="/blogpage"
+          element={
+            <GuestOnlyRoute>
+              <BlogPage />
             </GuestOnlyRoute>
           }
         />

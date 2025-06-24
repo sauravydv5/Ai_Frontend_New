@@ -1,5 +1,3 @@
-// CODE NEW
-
 import React, { useEffect, useState } from "react";
 import {
   BarChart2,
@@ -145,41 +143,67 @@ const DoctorHistory = () => {
         ))}
       </div>
 
-      {/* 📝 Feedback Section */}
-      <div className="p-6 mt-12 bg-white shadow-xl rounded-2xl">
-        <h2 className="mb-4 text-2xl font-bold text-gray-800">
-          Patient Feedback
+      {/* 🏆 Performance Highlights Section (New) */}
+      <div className="p-6 mt-12 shadow-xl bg-gradient-to-r from-indigo-50 to-purple-100 rounded-2xl">
+        <h2 className="mb-6 text-3xl font-extrabold text-center text-purple-800">
+          Doctor's Performance Highlights
         </h2>
 
-        {history.feedbacks && history.feedbacks.length > 0 ? (
-          <div className="space-y-4">
-            {history.feedbacks.map((fb, idx) => {
-              const name =
-                fb?.patient?.firstName || fb?.patient?.name || "Anonymous";
-              const lastName = fb?.patient?.lastName || "";
-              return (
-                <div
-                  key={idx}
-                  className="p-4 transition border bg-gray-50 rounded-xl hover:shadow-lg"
-                >
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium text-indigo-700">
-                      {name} {lastName}
-                    </span>
-                    <span className="text-sm font-bold text-yellow-600">
-                      ⭐ {fb.rating}/5
-                    </span>
-                  </div>
-                  {fb.comment && (
-                    <p className="mt-2 text-sm text-gray-700">{fb.comment}</p>
-                  )}
-                </div>
-              );
-            })}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {/* 🎖️ Badge 1 */}
+          <div className="relative p-5 transition duration-300 ease-in-out transform bg-white border border-gray-200 shadow-md rounded-xl hover:scale-105">
+            <div className="absolute px-3 py-1 text-sm font-bold text-white bg-yellow-400 rounded-full shadow -top-4 -left-4">
+              ⭐ Elite Care
+            </div>
+            <h3 className="mb-2 text-xl font-semibold text-indigo-800">
+              High Completion Rate
+            </h3>
+            <p className="text-sm text-gray-600">
+              {completionRate}% of appointments completed with diagnosis.
+              Reflects commitment & excellence.
+            </p>
           </div>
-        ) : (
-          <p className="text-gray-500">No feedback received yet.</p>
-        )}
+
+          {/* 🎯 Badge 2 */}
+          <div className="relative p-5 transition duration-300 ease-in-out transform bg-white border border-gray-200 shadow-md rounded-xl hover:scale-105">
+            <div className="absolute px-3 py-1 text-sm font-bold text-white bg-green-500 rounded-full shadow -top-4 -left-4">
+              🏅 Consistent
+            </div>
+            <h3 className="mb-2 text-xl font-semibold text-indigo-800">
+              Profile Engagement
+            </h3>
+            <p className="text-sm text-gray-600">
+              {history.profileUpdates || 0} profile updates show active presence
+              and up-to-date availability.
+            </p>
+          </div>
+
+          {/* ❤️ Badge 3 */}
+          <div className="relative p-5 transition duration-300 ease-in-out transform bg-white border border-gray-200 shadow-md rounded-xl hover:scale-105">
+            <div className="absolute px-3 py-1 text-sm font-bold text-white bg-pink-500 rounded-full shadow -top-4 -left-4">
+              💬 Impact
+            </div>
+            <h3 className="mb-2 text-xl font-semibold text-indigo-800">
+              Unique Patients Served
+            </h3>
+            <p className="text-sm text-gray-600">
+              {history.uniquePatientCount || 0} unique patients received care. A
+              mark of growing trust.
+            </p>
+          </div>
+
+          {/* 💡 Motivational Quote */}
+          <div className="relative p-5 text-white transition-all duration-300 ease-in-out bg-indigo-800 shadow-lg rounded-xl hover:rotate-1 hover:scale-105">
+            <div className="absolute px-3 py-1 text-sm font-bold text-indigo-800 bg-white rounded-full shadow -top-4 -left-4">
+              ✨ Inspire
+            </div>
+            <blockquote className="mb-2 text-lg italic">
+              “Wherever the art of medicine is loved, there is also a love of
+              humanity.”
+            </blockquote>
+            <p className="text-sm text-right">– Hippocrates</p>
+          </div>
+        </div>
       </div>
     </div>
   );

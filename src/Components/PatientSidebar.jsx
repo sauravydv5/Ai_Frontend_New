@@ -1,9 +1,10 @@
 const PatientMenu = [
   { name: "Home", icon: "🏠", path: "/patient-dashboard" },
   { name: "Edit Profile", icon: "🩺", path: "/patient-dashboard/editprofile" },
+
   {
-    name: "Symptom Cheaker",
-    icon: "🩺",
+    name: "Symptom Checker",
+    icon: "🧬", // ya "", "📋", "👨‍⚕️", "🧑‍⚕️"
     path: "/patient-dashboard/symptomcheak",
   },
 
