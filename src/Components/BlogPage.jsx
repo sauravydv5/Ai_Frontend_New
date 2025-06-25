@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Footer from "./Footer";
+import blog1 from "../../src/assets/blog1.jpeg";
 
 const blogPosts = [
   {
@@ -9,7 +10,7 @@ const blogPosts = [
     title: "5 Simple Habits for Better Mental Health",
     description:
       "Discover small daily habits that can significantly improve your mental well-being.",
-    image: "/src/assets/blog1.jpeg",
+    image: blog1,
     date: "June 22, 2025",
     tag: "Mental Health",
   },
