@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Footer from "./Footer";
 import blog1 from "../../src/assets/blog1.jpeg";
-import blog2 from "../../src/assets/blog2.jpeg";
+import blog2 from "../../src/assets/blog2.png";
 import blog3 from "../../src/assets/blog3.jpeg";
 import blog4 from "../../src/assets/blog4.jpeg";
 import blog5 from "../../src/assets/blog5.jpeg";
