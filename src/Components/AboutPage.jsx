@@ -164,7 +164,7 @@ const AboutPage = () => {
               Join our mission to make healthcare smarter and simpler.
             </p>
             <button
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/patientregister")}
               className="px-6 py-2 text-white transition bg-blue-600 rounded-full hover:bg-blue-700"
             >
               Join Now
