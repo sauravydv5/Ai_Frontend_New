@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Footer from "./Footer";
 import blog1 from "../../src/assets/blog1.jpeg";
+import blog2 from "../../src/assets/blog2.jpeg";
+import blog3 from "../../src/assets/blog3.jpeg";
+import blog4 from "../../src/assets/blog4.jpeg";
+import blog5 from "../../src/assets/blog5.jpeg";
+import blog6 from "../../src/assets/blog6.jpeg";
 
 const blogPosts = [
   {
@@ -18,7 +23,7 @@ const blogPosts = [
     id: 2,
     title: "How to Recognize Symptoms Early",
     description: "Learn how early detection can prevent serious health issues.",
-    image: "/src/assets/blog2.png",
+    image: blog2,
     date: "June 20, 2025",
     tag: "Symptoms",
   },
@@ -27,7 +32,7 @@ const blogPosts = [
     title: "The Role of AI in Modern Healthcare",
     description:
       "Explore how artificial intelligence is revolutionizing diagnostics and patient care.",
-    image: "/src/assets/blog3.jpeg",
+    image: blog3,
     date: "June 18, 2025",
     tag: "AI",
   },
@@ -36,7 +41,7 @@ const blogPosts = [
     title: "Understanding Seasonal Diseases",
     description:
       "Tips and insights on avoiding common illnesses during seasonal changes.",
-    image: "/src/assets/blog4.jpeg",
+    image: blog4,
     date: "June 15, 2025",
     tag: "General Health",
   },
@@ -45,7 +50,7 @@ const blogPosts = [
     title: "Nutrition Myths Busted: What’s Actually Healthy?",
     description:
       "From carbs to fats — learn the truth about popular nutrition myths and what your body really needs.",
-    image: "/src/assets/blog5.jpeg",
+    image: blog5,
     date: "June 10, 2025",
     tag: "Nutrition",
   },
@@ -54,7 +59,7 @@ const blogPosts = [
     title: "Telemedicine: The Future of Doctor Visits",
     description:
       "Explore how virtual consultations are transforming access to healthcare — especially in remote areas.",
-    image: "/src/assets/blog6.jpeg",
+    image: blog6,
     date: "June 5, 2025",
     tag: "Telemedicine",
   },
