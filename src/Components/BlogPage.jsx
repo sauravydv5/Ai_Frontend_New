@@ -9,7 +9,7 @@ const blogPosts = [
     title: "5 Simple Habits for Better Mental Health",
     description:
       "Discover small daily habits that can significantly improve your mental well-being.",
-    image: "/public/image/blog1.jpeg",
+    image: "/src/assets/blog1.jpeg",
     date: "June 22, 2025",
     tag: "Mental Health",
   },
@@ -17,7 +17,7 @@ const blogPosts = [
     id: 2,
     title: "How to Recognize Symptoms Early",
     description: "Learn how early detection can prevent serious health issues.",
-    image: "/public/image/blog2.png",
+    image: "/src/assets/blog2.png",
     date: "June 20, 2025",
     tag: "Symptoms",
   },
@@ -26,7 +26,7 @@ const blogPosts = [
     title: "The Role of AI in Modern Healthcare",
     description:
       "Explore how artificial intelligence is revolutionizing diagnostics and patient care.",
-    image: "/public/image/blog3.jpeg",
+    image: "/src/assets/blog3.jpeg",
     date: "June 18, 2025",
     tag: "AI",
   },
@@ -35,7 +35,7 @@ const blogPosts = [
     title: "Understanding Seasonal Diseases",
     description:
       "Tips and insights on avoiding common illnesses during seasonal changes.",
-    image: "/public/image/blog4.jpeg",
+    image: "/src/assets/blog4.jpeg",
     date: "June 15, 2025",
     tag: "General Health",
   },
@@ -44,7 +44,7 @@ const blogPosts = [
     title: "Nutrition Myths Busted: What’s Actually Healthy?",
     description:
       "From carbs to fats — learn the truth about popular nutrition myths and what your body really needs.",
-    image: "/public/image/blog5.jpeg",
+    image: "/src/assets/blog5.jpeg",
     date: "June 10, 2025",
     tag: "Nutrition",
   },
@@ -53,7 +53,7 @@ const blogPosts = [
     title: "Telemedicine: The Future of Doctor Visits",
     description:
       "Explore how virtual consultations are transforming access to healthcare — especially in remote areas.",
-    image: "/public/image/blog6.jpeg",
+    image: "/src/assets/blog6.jpeg",
     date: "June 5, 2025",
     tag: "Telemedicine",
   },
