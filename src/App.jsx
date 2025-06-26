@@ -38,6 +38,7 @@ import AuthRoute from "./utils/AuthRoute";
 import GuestOnlyRoute from "./utils/GuestOnlyRoute";
 import AboutPage from "./Components/AboutPage";
 import BlogPage from "./Components/BlogPage";
+import PayFee from "./Components/PayFee";
 
 const App = () => {
   return (
@@ -116,7 +117,7 @@ const App = () => {
           }
         />
 
-        {/* Patient Dashboard */}
+        {/* Patient Dashboard
         <Route
           path="/patient-dashboard"
           element={
@@ -138,6 +139,30 @@ const App = () => {
             path="patientdiagosisresult"
             element={<PatientDiagnosisList />}
           />
+        </Route> */}
+
+        {/* Patient Dashboard */}
+        <Route
+          path="/patient-dashboard"
+          element={
+            <AuthRoute role="patient">
+              <PatientDashboard />
+            </AuthRoute>
+          }
+        >
+          <Route index element={<Home />} />
+          <Route path="doctor-list" element={<DoctorList />} />
+          <Route path="book-appointment" element={<BookAppointment />} />
+          <Route path="myappointemet" element={<MyAppointments />} />
+          <Route path="editprofile" element={<EditPatientProfile />} />
+          <Route path="profileview" element={<PatientProfileView />} />
+          <Route path="chatbot" element={<ChatBot />} />
+          <Route path="symptomcheak" element={<SymptomChecker />} />
+          <Route
+            path="patientdiagosisresult"
+            element={<PatientDiagnosisList />}
+          />
+          <Route path="payfee/:appointmentId" element={<PayFee />} />
         </Route>
 
         {/* Doctor Dashboard */}

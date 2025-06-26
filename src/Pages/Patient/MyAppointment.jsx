@@ -1,5 +1,3 @@
-// NEWWW
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -8,7 +6,9 @@ import {
   Stethoscope,
   AlertCircle,
   User,
+  IndianRupee,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils/constant";
 
 const MyAppointments = () => {
@@ -16,8 +16,9 @@ const MyAppointments = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const token = localStorage.getItem("token"); // ✅ Use JWT token from localStorage
+  const token = localStorage.getItem("token");
 
   const fetchMyAppointments = async () => {
     try {
@@ -108,14 +109,15 @@ const MyAppointments = () => {
                   </h4>
                   <span
                     className={`text-xs font-medium px-3 py-1 rounded-full text-white ${
-                      appt.status === "accepted"
+                      appt.status?.toLowerCase() === "accepted"
                         ? "bg-green-600"
-                        : appt.status === "rejected"
+                        : appt.status?.toLowerCase() === "rejected"
                         ? "bg-red-600"
                         : "bg-yellow-500"
                     }`}
                   >
-                    {appt.status.charAt(0).toUpperCase() + appt.status.slice(1)}
+                    {appt.status?.charAt(0).toUpperCase() +
+                      appt.status?.slice(1)}
                   </span>
                 </div>
 
@@ -138,6 +140,41 @@ const MyAppointments = () => {
                   <AlertCircle className="inline w-4 h-4 mr-1 text-red-600" />
                   Reason: {appt.reason}
                 </p>
+
+                {/* Razorpay Pay Now Button */}
+                {appt.status?.toLowerCase() === "accepted" && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() =>
+                        navigate(`/patient-dashboard/payfee/${appt._id}`)
+                      }
+                      className={`w-full px-4 py-2 text-sm font-medium rounded-lg ${
+                        appt.paymentDone
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-indigo-600 text-white hover:bg-indigo-700"
+                      }`}
+                      disabled={appt.paymentDone}
+                    >
+                      <IndianRupee className="inline w-4 h-4 mr-1" />
+                      Pay Now
+                    </button>
+
+                    {appt.paymentDone && (
+                      <button
+                        disabled
+                        className="px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg cursor-not-allowed"
+                      >
+                        Paid
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {appt.paymentDone && (
+                  <div className="mt-3 text-sm font-semibold text-green-600">
+                    Payment Completed
+                  </div>
+                )}
               </div>
             );
           })}
