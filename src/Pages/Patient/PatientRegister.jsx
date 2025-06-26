@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils/constant";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PatientRegister = () => {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ const PatientRegister = () => {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,16 +33,19 @@ const PatientRegister = () => {
     }
 
     try {
+      setLoading(true);
       const res = await axios.post(BASE_URL + "/patient/signup", formData);
+      setLoading(false);
 
       if (res.data.message === "Patient registered successfully") {
-        alert("Registered successfully!");
-        navigate("/patientlogin");
+        toast.success("🎉 Registered successfully!");
+        setTimeout(() => navigate("/patientlogin"), 2000);
       } else {
         setError(res.data.message || "Registration failed.");
       }
     } catch (err) {
-      setError(
+      setLoading(false);
+      toast.error(
         err.response?.data?.message || "Something went wrong. Please try again."
       );
     }
@@ -47,6 +53,7 @@ const PatientRegister = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-r from-green-100 to-teal-200">
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="w-full max-w-md p-6 bg-white shadow-xl rounded-2xl sm:p-8">
         <h2 className="mb-6 text-3xl font-bold text-center text-teal-700">
           Patient Registration
@@ -57,71 +64,36 @@ const PatientRegister = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-1 font-medium">First Name</label>
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Last Name</label>
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Username</label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Email Address</label>
-            <input
-              type="email"
-              name="emailId"
-              value={formData.emailId}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
-            />
-          </div>
+          {[
+            { name: "firstName", label: "First Name", type: "text" },
+            { name: "lastName", label: "Last Name", type: "text" },
+            { name: "username", label: "Username", type: "text" },
+            { name: "emailId", label: "Email Address", type: "email" },
+            { name: "password", label: "Password", type: "password" },
+          ].map(({ name, label, type }) => (
+            <div key={name}>
+              <label className="block mb-1 font-medium">{label}</label>
+              <input
+                type={type}
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
+              />
+            </div>
+          ))}
 
           <button
             type="submit"
-            className="w-full px-4 py-2 font-medium text-white transition duration-300 bg-teal-600 rounded-md hover:bg-teal-700"
+            disabled={loading}
+            className={`w-full px-4 py-2 font-medium text-white rounded-md transition duration-300 ${
+              loading
+                ? "bg-teal-400 cursor-not-allowed"
+                : "bg-teal-600 hover:bg-teal-700"
+            }`}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
 

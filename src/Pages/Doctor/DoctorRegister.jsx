@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { BASE_URL } from "../../utils/constant";
 import { Loader2 } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DoctorRegister = () => {
   const navigate = useNavigate();
@@ -38,11 +40,19 @@ const DoctorRegister = () => {
       return;
     }
 
+    const trimmedData = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      emailId: emailId.trim(),
+      password,
+      registrationNumber: registrationNumber.trim(),
+    };
+
     setLoading(true);
     setError("");
 
     try {
-      const res = await axios.post(BASE_URL + "/doctor/signup", formData, {
+      const res = await axios.post(BASE_URL + "/doctor/signup", trimmedData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -50,16 +60,14 @@ const DoctorRegister = () => {
       });
 
       if (res.data.message === "Doctor registered successfully") {
-        alert("✅ Doctor registered successfully!");
-        navigate("/doctorlogin");
+        toast.success("✅ Doctor registered successfully!");
+        setTimeout(() => navigate("/doctorlogin"), 1500); // Delay navigation
       } else {
         setError(res.data.message || "Registration failed.");
       }
     } catch (err) {
       console.error("Signup Error:", err.response?.data || err.message);
-      setError(
-        err.response?.data?.message || "Something went wrong. Try again."
-      );
+      toast.error(err.response?.data?.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -67,6 +75,7 @@ const DoctorRegister = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-200 via-white to-indigo-100">
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="w-full max-w-md p-8 border border-blue-100 shadow-2xl bg-white/90 backdrop-blur-md rounded-3xl">
         <h2 className="mb-6 text-3xl font-extrabold text-center text-blue-700 drop-shadow">
           Doctor Registration
@@ -91,10 +100,14 @@ const DoctorRegister = () => {
             { name: "password", label: "Password", type: "password" },
           ].map(({ name, label, type }) => (
             <div key={name}>
-              <label className="block mb-1 font-medium text-gray-700">
+              <label
+                htmlFor={name}
+                className="block mb-1 font-medium text-gray-700"
+              >
                 {label}
               </label>
               <input
+                id={name}
                 type={type}
                 name={name}
                 value={formData[name]}
@@ -126,12 +139,12 @@ const DoctorRegister = () => {
 
         <p className="mt-6 text-sm text-center text-gray-600">
           Already have an account?{" "}
-          <a
-            href="/doctorlogin"
+          <Link
+            to="/doctorlogin"
             className="font-semibold text-blue-600 transition hover:underline"
           >
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>
